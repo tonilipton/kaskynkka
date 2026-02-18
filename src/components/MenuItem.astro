@@ -1,44 +1,89 @@
 ---
 import { addToCart } from '../stores/cart.js'
-import type { MenuItem } from '../lib/types.js'
+import type { MenuItem as MenuItemType } from '../lib/types.js'
+import type { Locale } from '../data/menu.js'
 
 interface Props {
-  item: MenuItem
+  item: MenuItemType
+  locale?: Locale
 }
 
-const { item } = Astro.props
-const isFantasia = item.id === 'pizza-9' || item.title.toLowerCase().includes('fantasia')
+const { item, locale = 'fi' } = Astro.props
+
+// Helper to get localized title
+function getTitle(item: MenuItemType, locale: Locale): string {
+  if (typeof item.title === 'object') {
+    return item.title[locale] || item.titleFi || ''
+  }
+  return item.title
+}
+
+// Helper to get localized description
+function getDescription(item: MenuItemType, locale: Locale): string {
+  if (typeof item.description === 'object') {
+    return item.description[locale] || item.descriptionFi || ''
+  }
+  return item.description || ''
+}
+
+const title = getTitle(item, locale)
+const description = getDescription(item, locale)
+const isFantasia = item.id === 'pizza-9' || title.toLowerCase().includes('fantasia')
+
+// Translations
+const translations = {
+  fi: {
+    selectToppings: 'Valitse 4 täytettä',
+    chooseToppings: 'Valitse Täytteet',
+    addToOrder: 'Lisää Tilaukseen',
+    added: 'Lisätty!',
+    soldOut: 'Loppuunmyyty',
+  },
+  en: {
+    selectToppings: 'Select 4 toppings',
+    chooseToppings: 'Select Toppings',
+    addToOrder: 'Add to Order',
+    added: 'Added!',
+    soldOut: 'Sold Out',
+  },
+}
+
+const t = translations[locale]
 ---
 
 <div class={`menu-item group ${!item.in_stock ? 'opacity-50' : ''}`} data-item-id={item.id}>
   <!-- Top Row: Title (left) and Price (right) -->
   <div class="flex justify-between items-baseline border-b border-accent/20 pb-2 mb-2">
-    <h3 class="font-serif text-xl text-accent flex-1 pr-4">{item.title}</h3>
+    <h3 class="font-serif text-xl text-accent flex-1 pr-4">{title}</h3>
     <span class="font-sans font-medium text-lg text-light whitespace-nowrap">{item.price.toFixed(2)}€</span>
   </div>
   
   <!-- Description -->
-  {item.description && (
-    <p class="font-sans text-muted text-sm leading-relaxed mb-3">{item.description}</p>
+  {description && (
+    <p class="font-sans text-muted text-sm leading-relaxed mb-3">{description}</p>
   )}
   
   {isFantasia && (
-    <p class="text-accent/80 text-xs mb-3 uppercase tracking-wider">Valitse 4 täytettä</p>
+    <p class="text-accent/80 text-xs mb-3 uppercase tracking-wider">{t.selectToppings}</p>
   )}
   
   <!-- Bottom Row: Empty space (left) and Button (right, aligned with price) -->
   <div class="flex justify-end items-center">
     {!item.in_stock ? (
-      <span class="text-xs uppercase tracking-widest text-red-400 border border-red-400/50 px-3 py-1.5">Loppuunmyyty</span>
+      <span class="text-xs uppercase tracking-widest text-red-400 border border-red-400/50 px-3 py-1.5">{t.soldOut}</span>
     ) : (
       <button 
         class={`add-to-cart-btn text-xs uppercase tracking-widest text-accent border border-accent px-4 py-2 hover:bg-accent hover:text-dark transition-all duration-300 ${isFantasia ? 'fantasy-btn' : ''}`}
         data-item-id={item.id}
-        data-item-title={item.title}
+        data-item-title-fi={typeof item.title === 'object' ? item.title.fi : item.title}
+        data-item-title-en={typeof item.title === 'object' ? item.title.en : ''}
+        data-item-title={title}
         data-item-price={item.price}
         data-is-fantasy={isFantasia ? 'true' : 'false'}
+        data-locale={locale}
+        data-added-text={t.added}
       >
-        {isFantasia ? 'Valitse Täytteet' : 'Lisää Tilaukseen'}
+        {isFantasia ? t.chooseToppings : t.addToOrder}
       </button>
     )}
   </div>
@@ -67,21 +112,28 @@ const isFantasia = item.id === 'pizza-9' || item.title.toLowerCase().includes('f
   document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const itemId = btn.getAttribute('data-item-id')
-      const itemTitle = btn.getAttribute('data-item-title')
       const itemPrice = btn.getAttribute('data-item-price')
-      const isFantasy = btn.getAttribute('data-is-fantasy') === 'true'
+      const isFantasia = btn.getAttribute('data-is-fantasy') === 'true'
+      const locale = btn.getAttribute('data-locale') || 'fi'
+      const addedText = btn.getAttribute('data-added-text') || 'Added!'
       
-      if (!itemId || !itemTitle || !itemPrice) return
+      if (!itemId || !itemPrice) return
       
       // If it's a Fantasia pizza, open the topping selector
-      if (isFantasy && window.openFantasyModal) {
+      if (isFantasia && window.openFantasyModal) {
         window.openFantasyModal(parseFloat(itemPrice))
         return
       }
       
+      // Get localized title
+      const titleFi = btn.getAttribute('data-item-title-fi') || ''
+      const titleEn = btn.getAttribute('data-item-title-en') || ''
+      
       const menuItem: MenuItem = {
         id: itemId,
-        title: itemTitle,
+        title: titleFi && titleEn ? { fi: titleFi, en: titleEn } : titleFi,
+        titleFi: titleFi,
+        titleEn: titleEn,
         category_id: '',
         price: parseFloat(itemPrice),
         in_stock: true
@@ -91,7 +143,7 @@ const isFantasia = item.id === 'pizza-9' || item.title.toLowerCase().includes('f
       
       // Visual feedback
       const originalText = btn.textContent
-      btn.textContent = 'Lisätty!'
+      btn.textContent = addedText
       btn.classList.add('bg-accent', 'text-dark')
       setTimeout(() => {
         btn.textContent = originalText

@@ -48,7 +48,17 @@
     "availability_note": "Ask our staff for more options. Availability may vary.",
     "add_to_order": "Add to Order",
     "added": "Added!",
-    "sold_out": "Sold Out"
+    "sold_out": "Sold Out",
+    "fantasia": {
+      "title": "Fantasia Pizza",
+      "select_toppings": "Select Toppings",
+      "select_4": "Select 4 toppings",
+      "selected": "selected",
+      "cancel": "Cancel",
+      "confirm": "Add to Order",
+      "added_message": "Fantasia pizza added to order!",
+      "error_select_4": "Please select exactly 4 toppings"
+    }
   },
   "dishes": {
     "three_pepper_steak": {

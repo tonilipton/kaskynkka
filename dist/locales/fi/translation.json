@@ -48,7 +48,17 @@
     "availability_note": "Kysy lisää vaihtoehdoista henkilökunnaltamme. Saatavuus voi vaihdella.",
     "add_to_order": "Lisää Tilaukseen",
     "added": "Lisätty!",
-    "sold_out": "Loppuunmyyty"
+    "sold_out": "Loppuunmyyty",
+    "fantasia": {
+      "title": "Fantasia Pizza",
+      "select_toppings": "Valitse täytteet",
+      "select_4": "Valitse 4 täytettä",
+      "selected": "valittu",
+      "cancel": "Peruuta",
+      "confirm": "Lisää Tilaukseen",
+      "added_message": "Fantasia pizza lisätty tilaukseen!",
+      "error_select_4": "Valitse täsmälleen neljä täytettä"
+    }
   },
   "dishes": {
     "three_pepper_steak": {

@@ -1,20 +1,27 @@
 ---
 import { cart, getCartTotal, getCartItemCount, removeFromCart, updateQuantity, clearCart, getCartItems } from '../stores/cart'
+import type { Locale } from '../data/menu'
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'fi' } = Astro.props
 ---
 
 <div id="cart-container" class="bg-surface p-6 border border-dark">
   <div class="flex justify-between items-center mb-6 pb-4 border-b border-dark">
-    <h2 class="font-serif text-2xl text-accent">Tilauksesi</h2>
-    <span id="cart-count" class="text-muted text-sm uppercase tracking-wider">0 tuotetta</span>
+    <h2 class="font-serif text-2xl text-accent">{locale === 'fi' ? 'Tilauksesi' : 'Your Order'}</h2>
+    <span id="cart-count" class="text-muted text-sm uppercase tracking-wider">0 {locale === 'fi' ? 'tuotetta' : 'items'}</span>
   </div>
   
   <div id="cart-items" class="min-h-[100px] mb-6">
-    <p class="text-center text-muted py-8 italic">Ostoskorisi on tyhjä</p>
+    <p class="text-center text-muted py-8 italic">{locale === 'fi' ? 'Ostoskorisi on tyhjä' : 'Your cart is empty'}</p>
   </div>
   
   <div class="border-t border-dark pt-6">
     <div class="text-right mb-6">
-      <span class="text-muted text-sm uppercase tracking-wider mr-2">Yhteensä</span>
+      <span class="text-muted text-sm uppercase tracking-wider mr-2">{locale === 'fi' ? 'Yhteensä' : 'Total'}</span>
       <span id="cart-total" class="font-serif text-3xl text-accent">€0.00</span>
     </div>
     
@@ -22,15 +29,17 @@ import { cart, getCartTotal, getCartItemCount, removeFromCart, updateQuantity, c
       id="checkout-btn" 
       class="w-full py-4 bg-accent text-dark font-sans font-medium uppercase tracking-widest text-sm hover:bg-accent/90 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed mb-3"
       disabled
+      data-locale={locale}
     >
-      Siirry Kassalle
+      {locale === 'fi' ? 'Siirry Kassalle' : 'Proceed to Checkout'}
     </button>
     
     <button 
       id="clear-cart-btn"
       class="w-full py-3 border border-muted text-muted font-sans uppercase tracking-widest text-xs hover:border-accent hover:text-accent transition-colors duration-300"
+      data-confirm-message={locale === 'fi' ? 'Haluatko varmasti tyhjentää ostoskorin?' : 'Are you sure you want to clear the cart?'}
     >
-      Tyhjennä Kori
+      {locale === 'fi' ? 'Tyhjennä Kori' : 'Clear Cart'}
     </button>
   </div>
 </div>
@@ -53,23 +62,43 @@ import { cart, getCartTotal, getCartItemCount, removeFromCart, updateQuantity, c
     const cartCountEl = document.getElementById('cart-count')
     const checkoutBtn = document.getElementById('checkout-btn') as HTMLButtonElement | null
     
-    if (!cartItemsEl || !cartTotalEl || !cartCountEl || !checkoutBtn) return
+    // Get locale from the button or default to fi
+    let locale = 'fi'
+    if (checkoutBtn) {
+      locale = checkoutBtn.getAttribute('data-locale') || 'fi'
+    } else {
+      // Fallback: check body or html element
+      const htmlEl = document.querySelector('html')
+      if (htmlEl?.getAttribute('lang') === 'en') locale = 'en'
+    }
     
-    cartCountEl.textContent = count + ' ' + (count === 1 ? 'tuote' : 'tuotetta')
-    cartTotalEl.textContent = formatPrice(total)
-    checkoutBtn.disabled = items.length === 0
+    const itemText = locale === 'fi' ? 'tuote' : 'items'
+    const itemTextSingular = locale === 'fi' ? 'tuote' : 'item'
+    const emptyText = locale === 'fi' ? 'Ostoskorisi on tyhjä' : 'Your cart is empty'
+    const perPiece = locale === 'fi' ? 'kpl' : 'pc'
+    
+    if (cartCountEl) cartCountEl.textContent = count + ' ' + (count === 1 ? itemTextSingular : itemText)
+    if (cartTotalEl) cartTotalEl.textContent = formatPrice(total)
+    if (checkoutBtn) checkoutBtn.disabled = items.length === 0
+    
+    if (!cartItemsEl) return
     
     if (items.length === 0) {
-      cartItemsEl.innerHTML = '<p class="text-center text-muted py-8 italic">Ostoskorisi on tyhjä</p>'
+      cartItemsEl.innerHTML = '<p class="text-center text-muted py-8 italic">' + emptyText + '</p>'
       return
     }
     
     let html = ''
     for (const item of items) {
+      // Handle both old format (title as string) and new format (title as object with fi/en)
+      const title = typeof item.menuItem.title === 'object' 
+        ? (item.menuItem.title[locale as 'fi' | 'en'] || item.menuItem.titleFi || '')
+        : item.menuItem.title
+      
       html += '<div class="flex justify-between items-center py-4 border-b border-dark/50" data-item-id="' + item.menuItem.id + '">'
       html += '<div class="flex-1">'
-      html += '<h4 class="font-serif text-light text-lg">' + item.menuItem.title + '</h4>'
-      html += '<p class="text-muted text-sm">' + formatPrice(item.menuItem.price) + ' kpl</p>'
+      html += '<h4 class="font-serif text-light text-lg">' + title + '</h4>'
+      html += '<p class="text-muted text-sm">' + formatPrice(item.menuItem.price) + ' ' + perPiece + '</p>'
       html += '</div>'
       html += '<div class="flex items-center gap-3">'
       html += '<button class="qty-btn w-8 h-8 flex items-center justify-center border border-muted text-muted hover:border-accent hover:text-accent transition-colors" data-action="decrease" data-item-id="' + item.menuItem.id + '">-</button>'
@@ -108,8 +137,10 @@ import { cart, getCartTotal, getCartItemCount, removeFromCart, updateQuantity, c
   cart.subscribe(() => renderCart())
   renderCart()
   
-  document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
-    if (confirm('Haluatko varmasti tyhjentää ostoskorin?')) clearCart()
+  document.getElementById('clear-cart-btn')?.addEventListener('click', (e) => {
+    const btn = e.currentTarget as HTMLButtonElement
+    const confirmMessage = btn.getAttribute('data-confirm-message') || 'Are you sure?'
+    if (confirm(confirmMessage)) clearCart()
   })
   
   document.getElementById('checkout-btn')?.addEventListener('click', () => {

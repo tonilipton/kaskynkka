@@ -1,48 +1,67 @@
 ---
-// Available toppings for Fantasia pizza
-export const FANTASY_TOPPINGS = [
-  'ananas', 'anjovis', 'aurajuusto', 'bearnaisekastike', 'broileri',
-  'salaattijuusto', 'herkkusieni', 'hillosipuli', 'jauheliha', 'jalopeno',
-  'kananmuna', 'kapris', 'katkarapu', 'kebab', 'kinkku',
-  'kylmäsavulohi', 'majoneesi', 'maustekurkku', 'oliivi', 'paholaisen hillo',
-  'paprika', 'pekoni', 'pepperoni', 'persikka', 'savupororouhe',
-  'meetvursti', 'sipuli', 'parsa', 'tomaatti', 'tonnikala', 'valkosipuli'
-] as const
+import { FANTASIA_TOPPINGS, type Locale } from '../data/menu'
 
-export type FantasyTopping = typeof FANTASY_TOPPINGS[number]
-
-export interface FantasyPizzaSelection {
-  toppings: FantasyTopping[]
+interface Props {
+  locale?: Locale
 }
+
+const { locale = 'fi' } = Astro.props
+
+const toppings = FANTASIA_TOPPINGS[locale]
+
+// Translations
+const translations = {
+  fi: {
+    title: 'Fantasia Pizza',
+    selectToppings: 'Valitse neljä (4) täytettä',
+    errorSelect4: 'Valitse täsmälleen neljä täytettä',
+    selected: 'valittu',
+    cancel: 'Peruuta',
+    confirm: 'Lisää Tilaukseen',
+    addedMessage: 'Fantasia pizza lisätty tilaukseen!',
+  },
+  en: {
+    title: 'Fantasia Pizza',
+    selectToppings: 'Select four (4) toppings',
+    errorSelect4: 'Please select exactly 4 toppings',
+    selected: 'selected',
+    cancel: 'Cancel',
+    confirm: 'Add to Order',
+    addedMessage: 'Fantasia pizza added to order!',
+  },
+}
+
+const t = translations[locale]
 ---
 
-<div id="fantasy-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
+<div id="fantasy-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4" data-locale={locale} data-translations={JSON.stringify(t)}>
   <div class="bg-surface border border-accent max-w-2xl w-full max-h-[90vh] overflow-y-auto">
     <div class="p-6 border-b border-dark">
-      <h3 class="font-serif text-2xl text-accent">Fantasia Pizza</h3>
-      <p class="text-muted text-sm mt-2">Valitse neljä (4) täytettä</p>
+      <h3 class="font-serif text-2xl text-accent">{t.title}</h3>
+      <p class="text-muted text-sm mt-2">{t.selectToppings}</p>
     </div>
     
     <div class="p-6">
       <div id="topping-error" class="hidden bg-red-900/30 border border-red-500/50 text-red-200 p-3 mb-4 text-sm">
-        Valitse täsmälleen neljä täytettä
+        {t.errorSelect4}
       </div>
       
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="toppings-grid">
-        {FANTASY_TOPPINGS.map((topping) => (
+        {toppings.map((topping) => (
           <label class="flex items-center gap-2 p-3 border border-dark hover:border-accent cursor-pointer transition-colors">
             <input 
               type="checkbox" 
-              value={topping} 
+              value={topping.value} 
+              data-label-fi={topping.label}
               class="topping-checkbox w-4 h-4 accent-accent"
             />
-            <span class="text-light text-sm capitalize">{topping}</span>
+            <span class="text-light text-sm">{topping.label}</span>
           </label>
         ))}
       </div>
       
       <div class="mt-4 text-center">
-        <span id="topping-count" class="text-accent font-serif text-lg">0 / 4 valittu</span>
+        <span id="topping-count" class="text-accent font-serif text-lg">0 / 4 {t.selected}</span>
       </div>
     </div>
     
@@ -51,14 +70,14 @@ export interface FantasyPizzaSelection {
         id="cancel-fantasy" 
         class="flex-1 py-3 border border-muted text-muted hover:border-accent hover:text-accent transition-colors uppercase tracking-wider text-sm"
       >
-        Peruuta
+        {t.cancel}
       </button>
       <button 
         id="confirm-fantasy" 
         class="flex-1 py-3 bg-accent text-dark hover:bg-accent/90 transition-colors uppercase tracking-wider text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         disabled
       >
-        Lisää Tilaukseen
+        {t.confirm}
       </button>
     </div>
   </div>
@@ -75,6 +94,10 @@ export interface FantasyPizzaSelection {
   const cancelBtn = document.getElementById('cancel-fantasy')
   const errorDiv = document.getElementById('topping-error')
   
+  // Get translations from data attribute
+  const translations = modal ? JSON.parse(modal.getAttribute('data-translations') || '{}') : {}
+  const locale = modal ? modal.getAttribute('data-locale') || 'fi' : 'fi'
+  
   let currentPrice = 14.80
   
   function updateCount() {
@@ -82,7 +105,7 @@ export interface FantasyPizzaSelection {
     const count = selected.length
     
     if (countDisplay) {
-      countDisplay.textContent = `${count} / 4 valittu`
+      countDisplay.textContent = `${count} / 4 ${translations.selected || 'selected'}`
     }
     
     if (confirmBtn) {
@@ -141,7 +164,10 @@ export interface FantasyPizzaSelection {
   confirmBtn?.addEventListener('click', () => {
     const selected = Array.from(checkboxes)
       .filter(cb => cb.checked)
-      .map(cb => cb.value)
+      .map(cb => ({
+        value: cb.value,
+        label: cb.getAttribute('data-label-fi') || cb.value
+      }))
     
     if (selected.length !== 4) {
       if (errorDiv) {
@@ -150,10 +176,16 @@ export interface FantasyPizzaSelection {
       return
     }
     
+    // Create title with selected toppings
+    const toppingLabels = selected.map(s => s.label).join(', ')
+    const titleFi = 'Fantasia (' + toppingLabels + ')'
+    
     // Add to cart with toppings
     const menuItem = {
       id: 'pizza-fantasia-' + Date.now(),
-      title: 'Fantasia (' + selected.join(', ') + ')',
+      title: { fi: titleFi, en: 'Fantasia (' + toppingLabels + ')' },
+      titleFi: titleFi,
+      titleEn: 'Fantasia (' + toppingLabels + ')',
       category_id: 'pizzat',
       price: currentPrice,
       in_stock: true
@@ -163,6 +195,6 @@ export interface FantasyPizzaSelection {
     closeModal()
     
     // Show success message
-    alert('Fantasia pizza lisätty tilaukseen!')
+    alert(translations.addedMessage || 'Added!')
   })
 </script>

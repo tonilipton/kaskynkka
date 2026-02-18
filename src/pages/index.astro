@@ -1,389 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Hero from '../components/Hero.astro'
-import MenuItem from '../components/MenuItem.astro'
+import MenuSection from '../components/MenuSection.astro'
 import Cart from '../components/Cart.astro'
-import FantasyPizzaSelector from '../components/FantasyPizzaSelector.astro'
+import { LUNCH_INFO, TESTIMONIALS, OPENING_HOURS } from '../data/menu'
+import { WEEKLY_LUNCH_MENU, CURRENT_WEEK_FI, DIETARY_INFO } from '../data/lunchMenu'
 
-// Menu categories
-const categories = [
-  { id: 'salaatit', label: 'Salaatit', labelEn: 'Salads' },
-  { id: 'lampimat', label: 'Lämpimät Ruoat', labelEn: 'Warm Meals' },
-  { id: 'hampurilaiset', label: 'Hampurilaiset', labelEn: 'Burgers' },
-  { id: 'pizzat', label: 'Pizzat', labelEn: 'Pizzas' },
-  { id: 'jalkiruoat', label: 'Jälkiruoat', labelEn: 'Desserts' },
-  { id: 'lapsille', label: 'Lapsille', labelEn: 'For Children' },
-]
-
-// All menu items with Finnish names and descriptions
-const menuItems = [
-  // Salaatit (Salads)
-  {
-    id: 'salaatti-1',
-    title: 'Hedelmäinen Broilerisalaatti',
-    description: 'Raikas broilerisalaatti hedelmillä. Sopii erinomaisesti kevyeksi ateriaksi tai alkuruoaksi.',
-    price: 19.00,
-    in_stock: true,
-    category_id: 'salaatit'
-  },
-  {
-    id: 'salaatti-2',
-    title: 'Lohi-Caesar-Salaatti',
-    description: 'Vihreää salaattia, tomaattia, punasipulia, lämminsavulohta ja Caesar-kastiketta.',
-    price: 20.00,
-    in_stock: true,
-    category_id: 'salaatit'
-  },
-  
-  // Lämpimät Ruoat (Warm Meals)
-  {
-    id: 'lampima-1',
-    title: 'Kolmen Pippurin Pihvi',
-    description: '160g naudan sisäfileepihvi kermaisella viherpippurikastikkeella. Talon suosikki!',
-    price: 36.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-2',
-    title: 'Metsästäjänpihvi',
-    description: "160g viipaloitua naudan sisäfileetä täyteläisellä kanttarellikastikkeella. Suomalainen klassikko!",
-    price: 33.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-3',
-    title: 'Black & White -Pihvi',
-    description: '200g naudan ulkofileepihvi madeira- ja bearnaisekastikkeella.',
-    price: 31.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-4',
-    title: 'Talon Pihvi',
-    description: '200g naudan ulkofileepihvi kanttarellikastikkeella.',
-    price: 31.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-5',
-    title: 'Grillipihvi',
-    description: '200g naudan ulkofileepihvi valkosipuliyrttivoilla.',
-    price: 30.50,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-6',
-    title: 'Jättilehtipihvi',
-    description: '160g ohut naudan ulkofileepihvi grillimaustevoilla.',
-    price: 29.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-7',
-    title: 'Bearnaisepihvi',
-    description: '160g porsaan ulkofileepihvi bearnaisekastikkeella.',
-    price: 25.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-8',
-    title: 'Porsaanselykset Dijonkastike',
-    description: '2x80g porsaan ulkofileepihvit dijon-sinappikastikkeella.',
-    price: 25.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-9',
-    title: 'Pariloitua Maksaa',
-    description: 'Pariloitua maksaa, rapeaa pekonia, puolukoita ja kermakastiketta.',
-    price: 25.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-10',
-    title: 'Aurajuusto-Persikkakuorrutettua Broilerinfileetä',
-    description: 'Broilerin rintafileetä aurajuusto-persikkakuorrutteella.',
-    price: 25.50,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-11',
-    title: 'Broileria ja Mustaherukka-Portviinikastiketta',
-    description: 'Broilerin rintafileetä mustaherukka-portviinikastikkeella.',
-    price: 25.50,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-12',
-    title: 'Paistetut Muikut',
-    description: 'Paistettuja muikkuja – tuoretta järvikalaa kotimaan vesiltä.',
-    price: 25.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-13',
-    title: 'Savustettua Lohta',
-    description: '160g savulohifilee remoulade-kastikkeella.',
-    price: 29.50,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-14',
-    title: 'Gratinoitu Espanjalainen Kasvispaistos',
-    description: 'Espanjalainen kasvispaistos, jossa grillattuja vihanneksia, fetajuustokuutioita ja bearnaisekastiketta.',
-    price: 21.50,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-15',
-    title: 'Välimeren Kanaleipä',
-    description: 'Valkoista leipää broilerin rintafileellä ja välimerellisellä majoneesilla.',
-    price: 25.00,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  {
-    id: 'lampima-16',
-    title: 'Oskarin Leipä',
-    description: 'Valkoista leipää naudan ulkofileellä, choron-kastikkeella, katkaravuilla ja parsalla.',
-    price: 29.50,
-    in_stock: true,
-    category_id: 'lampimat'
-  },
-  
-  // Hampurilaiset (Burgers)
-  {
-    id: 'burger-1',
-    title: 'Hampurilainen',
-    description: 'Nautapihvi, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
-    price: 14.00,
-    in_stock: true,
-    category_id: 'hampurilaiset'
-  },
-  {
-    id: 'burger-2',
-    title: 'Juustohampurilainen',
-    description: 'Nautapihvi, juustoa, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
-    price: 14.70,
-    in_stock: true,
-    category_id: 'hampurilaiset'
-  },
-  {
-    id: 'burger-3',
-    title: 'Ananashampurilainen',
-    description: 'Nautapihvi, ananasrengas, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
-    price: 14.70,
-    in_stock: true,
-    category_id: 'hampurilaiset'
-  },
-  {
-    id: 'burger-4',
-    title: 'Munahampurilainen',
-    description: 'Nautapihvi, paistettu kananmuna, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
-    price: 14.70,
-    in_stock: true,
-    category_id: 'hampurilaiset'
-  },
-  {
-    id: 'burger-5',
-    title: 'Special-Hampurilainen',
-    description: 'Kaksi nautapihviä, pekonia, kananmunaa, juustoa ja ananasrengas. Sisältää ranskalaiset perunat.',
-    price: 20.00,
-    in_stock: true,
-    category_id: 'hampurilaiset'
-  },
-  
-  // Pizzat (Pizzas)
-  {
-    id: 'pizza-1',
-    title: 'Tropicana',
-    description: 'Kinkkua ja ananasta.',
-    price: 14.00,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-2',
-    title: 'Bolognese',
-    description: 'Jauhelihaa.',
-    price: 13.30,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-3',
-    title: 'Quatro Stagioni',
-    description: 'Kinkkua, herkkusieniä, katkarapuja ja tonnikalaa.',
-    price: 14.80,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-4',
-    title: 'Vegetariana',
-    description: 'Paprikaa, parsaa, sipulia, tomaattia ja herkkusieniä.',
-    price: 14.80,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-5',
-    title: 'Meetvurstipizza',
-    description: 'Salamia.',
-    price: 14.00,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-6',
-    title: 'Opera',
-    description: 'Kinkkua ja tonnikalaa.',
-    price: 14.00,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-7',
-    title: 'Opera Special',
-    description: 'Kinkkua, tonnikalaa ja salamia.',
-    price: 14.80,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-8',
-    title: 'Käskynkkä Special',
-    description: 'Broileria, persikkaa, aurajuustoa ja bearnaisekastiketta.',
-    price: 14.80,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  {
-    id: 'pizza-9',
-    title: 'Fantasia',
-    description: 'Valitse neljä vapaavalintaista täytettä!',
-    price: 14.80,
-    in_stock: true,
-    category_id: 'pizzat'
-  },
-  
-  // Jälkiruoat (Desserts)
-  {
-    id: 'jalkiruoka-1',
-    title: 'Mango-Melonijäätelöä ja Suklaakastiketta',
-    description: 'Mango-melonijäätelöä suklaakastikkeella.',
-    price: 9.00,
-    in_stock: true,
-    category_id: 'jalkiruoat'
-  },
-  {
-    id: 'jalkiruoka-2',
-    title: 'Mustikkakukkoa ja Vaniljajäätelöä',
-    description: 'Mustikkakukkoa ja vaniljajäätelöä.',
-    price: 10.00,
-    in_stock: true,
-    category_id: 'jalkiruoat'
-  },
-  {
-    id: 'jalkiruoka-3',
-    title: 'Ohukaiset',
-    description: 'Pannullinen muurinpohjalettuja vadelmahillon ja kermavaahdon kera.',
-    price: 10.50,
-    in_stock: true,
-    category_id: 'jalkiruoat'
-  },
-  
-  // Lapsille (For Children)
-  {
-    id: 'lapsi-1',
-    title: 'Maistuva Jauhelihapihvi',
-    description: 'Maistuva jauhelihapihvi bearnaisekastikkeella ja ranskalaisilla perunoilla.',
-    price: 10.80,
-    in_stock: true,
-    category_id: 'lapsille'
-  },
-  {
-    id: 'lapsi-2',
-    title: "Äidin Lihapullat",
-    description: "Äidin lihapullat kermakastikkeella ja perunamuusilla.",
-    price: 11.00,
-    in_stock: true,
-    category_id: 'lapsille'
-  },
-  {
-    id: 'lapsi-3',
-    title: 'Herkkupihvi',
-    description: 'Porsaanpihvi ananasrenkaalla ja perunamuusilla.',
-    price: 13.00,
-    in_stock: true,
-    category_id: 'lapsille'
-  },
-  {
-    id: 'lapsi-4',
-    title: 'Nauravat Nakit',
-    description: 'Nauravat nakit majoneesilla ja ranskalaisilla perunoilla.',
-    price: 10.50,
-    in_stock: true,
-    category_id: 'lapsille'
-  },
-  {
-    id: 'lapsi-5',
-    title: 'Iso Lehtipihvi',
-    description: 'Iso lehtipihvi maustevoilla ja ranskalaisilla perunoilla.',
-    price: 15.30,
-    in_stock: true,
-    category_id: 'lapsille'
-  },
-]
-
-// Lunch buffet info
-const lunchInfo = {
-  price: 13.00,
-  time: 'Ma-Pe 10:00 - 15:00',
-  includes: ['Runsas salaattipöytä', 'Alkuruoka', 'Juomat', 'Leipä', 'Pääruoka', 'Kahvi & jälkiruoka']
-}
-
-// Fixed testimonials
-const testimonials = [
-  {
-    text: "Erinomainen pihviravintola. Liha on mureaa ja maukasta. Aterian hintaan sisältyy useita lisukevaihtoehtoja sekä runsas salaattipöytä.",
-    rating: 5
-  },
-  {
-    text: "Lounasbuffetin salaattivalikoima on erinomainen, ja annoskoot ovat yllättävän suuria. Täältä ei todellakaan tarvitse lähteä nälkäisenä.",
-    rating: 5
-  },
-  {
-    text: "Herkullista ruokaa ja rauhallinen tunnelma jopa kiireisinä lounasaikoina. Lämmin suositus lihan ystäville.",
-    rating: 5
-  }
-]
-
-// Opening hours
-const openingHours = [
-  { day: 'Maanantai - Torstai', hours: '10:00 - 20:00', note: 'Keittiö sulkeutuu klo 19:00' },
-  { day: 'Perjantai', hours: '10:00 - 21:00', note: 'Keittiö sulkeutuu klo 20:00' },
-  { day: 'Lauantai', hours: '12:00 - 21:00', note: 'Keittiö sulkeutuu klo 20:00' },
-  { day: 'Sunnuntai', hours: 'Suljettu', note: 'Yksityistilaisuudet mahdollisia' }
-]
+const locale: 'fi' = 'fi'
+const lunchInfo = LUNCH_INFO
+const testimonials = TESTIMONIALS[locale]
+const openingHours = OPENING_HOURS[locale]
 ---
 
 <Layout title="Ravintola Käskynkkä | Lounas, Á La Carte ja Pitopalvelu Kuopiossa">
-  <Hero />
+  <Hero locale={locale} />
   
   <section id="services" class="py-32 px-4 bg-surface">
     <div class="max-w-6xl mx-auto">
@@ -393,129 +23,90 @@ const openingHours = [
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+        <a href="#lunch" class="block text-center p-8 border border-dark hover:border-accent transition-colors duration-300 group">
           <div class="text-5xl mb-6">🍽️</div>
-          <h3 class="font-serif text-2xl text-light mb-4">Lounasbuffet</h3>
-          <p class="text-muted text-sm mb-4">Arkisin {lunchInfo.time}</p>
+          <h3 class="font-serif text-2xl text-light mb-4 group-hover:text-accent transition-colors">Lounasbuffet</h3>
+          <p class="text-muted text-sm mb-4">Arkisin {lunchInfo.time[locale]}</p>
           <p class="text-accent font-serif text-3xl mb-4">€{lunchInfo.price.toFixed(2)}</p>
           <p class="text-muted/80 text-sm">Sisältää runsaan salaattipöydän, alkuruuan, juomat, leivän, pääruuan, kahvin ja jälkiruuan</p>
-        </div>
-  
-        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+        </a>
+   
+        <a href="#menu" class="block text-center p-8 border border-dark hover:border-accent transition-colors duration-300 group">
           <div class="text-5xl mb-6">🥩</div>
-          <h3 class="font-serif text-2xl text-light mb-4">Á La Carte</h3>
+          <h3 class="font-serif text-2xl text-light mb-4 group-hover:text-accent transition-colors">Á La Carte</h3>
           <p class="text-muted text-sm mb-4">Tunnettu runsaista pihviaterioista</p>
           <p class="text-accent font-serif text-3xl mb-4">Laatu</p>
           <p class="text-muted/80 text-sm">Korkealaatuiset lihatuotteet ja reilut annoskoot ovat intohimomme</p>
-        </div>
+        </a>
         
-        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+        <a href="#catering" class="block text-center p-8 border border-dark hover:border-accent transition-colors duration-300 group">
           <div class="text-5xl mb-6">🎉</div>
-          <h3 class="font-serif text-2xl text-light mb-4">Pitopalvelu</h3>
+          <h3 class="font-serif text-2xl text-light mb-4 group-hover:text-accent transition-colors">Pitopalvelu</h3>
           <p class="text-muted text-sm mb-4">Yksityistilaisuudet & Yritystapahtumat</p>
           <p class="text-accent font-serif text-3xl mb-4">Täysi</p>
-          <p class="text-muted/80 text-sm">Räätälöidyt menut juhliin ja tilaisuuksiin - anna meidän huolehtia onnistuneesta päivästäsi</p>
-        </div>
+          <p class="text-muted/80 text-sm">Räätälöidyt menyt juhliin ja tilaisuuksiin - anna meidän huolehtia onnistuneesta päivästäsi</p>
+        </a>
         
-        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+        <a href="#sauna" class="block text-center p-8 border border-dark hover:border-accent transition-colors duration-300 group">
           <div class="text-5xl mb-6">🧖</div>
-          <h3 class="font-serif text-2xl text-light mb-4">Sauna & Kabinetti</h3>
+          <h3 class="font-serif text-2xl text-light mb-4 group-hover:text-accent transition-colors">Sauna & Kabinetti</h3>
           <p class="text-muted text-sm mb-4">Yksityistilat ryhmille</p>
           <p class="text-accent font-serif text-3xl mb-4">Varaa</p>
           <p class="text-muted/80 text-sm">Saunatilat ja kabinetit saatavilla ryhmävarauksiin - täydellinen illanviettoon</p>
-        </div>
+        </a>
       </div>
     </div>
   </section>
   
-  <section id="menu" class="py-32 px-4">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-12">
-        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Á La Carte - Suosikkiannoksemme</h2>
-        <p class="text-muted font-sans tracking-wider uppercase text-sm">Tunnettu runsaista pihviaterioista ja korkealaatuisesta lihasta</p>
-      </div>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2">
-          <p class="text-muted text-center mb-8">
-            Valitse suosikkiannoksesi ja tee tilaus suoraan verkossa. Nouto ravintolasta.
-          </p>
-          
-          <div class="flex flex-wrap justify-center gap-2 mb-8" id="category-tabs">
-            {categories.map((cat, index) => (
-              <button 
-                class={`category-tab px-4 py-2 font-sans uppercase tracking-wider text-xs border transition-all duration-300 ${index === 1 ? 'bg-accent text-dark border-accent' : 'border-accent text-accent hover:bg-accent/10'}`}
-                data-category={cat.id}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-  
-          <div id="menu-items-container">
-            {categories.map((cat, index) => {
-              const items = menuItems.filter(item => item.category_id === cat.id)
-              return (
-                <div 
-                  class={`category-section ${index === 1 ? 'block' : 'hidden'}`} 
-                  data-category={cat.id}
-                >
-                  <h3 class="font-serif text-2xl text-accent mb-6 text-center">{cat.label}</h3>
-                  <p class="text-muted text-sm text-center mb-8">{cat.labelEn}</p>
-                  <div class="space-y-0">
-                    {items.map((item) => (
-                      <MenuItem item={item} />
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          
-          <div class="mt-12 text-center">
-            <p class="text-muted text-sm italic">
-              * Kysy lisää vaihtoehdoista henkilökunnaltamme. Saatavuus voi vaihdella.
-            </p>
-          </div>
-        </div>
-        
-        <aside class="lg:col-span-1">
-          <div class="sticky top-8">
-            <Cart client:load />
-          </div>
-        </aside>
-      </div>
-    </div>
-  </section>
+  <MenuSection locale={locale}>
+    <Cart locale={locale} />
+  </MenuSection>
   
   <section id="lunch" class="py-32 px-4 bg-surface">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-16">
         <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Lounasbuffet</h2>
-        <p class="text-muted font-sans tracking-wider uppercase text-sm">Arkisin {lunchInfo.time}</p>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Lounas ajalla {CURRENT_WEEK_FI}</p>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         <div>
           <div class="text-6xl font-serif text-accent mb-6">€{lunchInfo.price.toFixed(2)}</div>
           <p class="text-light text-lg mb-6">
             Runsas lounasbuffet, joka sisältää kaiken tarvitsemasi täydelliseen lounashetkeen.
           </p>
-          <ul class="space-y-3">
-            {lunchInfo.includes.map((item) => (
+          <ul class="space-y-3 mb-8">
+            {lunchInfo.includes[locale].map((item) => (
               <li class="flex items-center text-muted">
                 <span class="text-accent mr-3">✓</span>
                 {item}
               </li>
             ))}
           </ul>
+          
+          <!-- Dietary legend -->
+          <div class="bg-dark p-4 border border-accent/30">
+            <p class="text-muted text-sm uppercase tracking-wider mb-2">Ruokavaliomerkinnät</p>
+            <div class="flex gap-6 text-sm">
+              <span><span class="text-accent font-bold">vl</span> = {DIETARY_INFO.fi.vl}</span>
+              <span><span class="text-accent font-bold">l</span> = {DIETARY_INFO.fi.l}</span>
+              <span><span class="text-accent font-bold">g</span> = {DIETARY_INFO.fi.g}</span>
+            </div>
+          </div>
         </div>
-        <div class="text-center">
-          <div class="bg-dark p-8 inline-block">
-            <p class="text-muted uppercase tracking-wider text-sm mb-2">Aukioloajat</p>
-            <p class="text-light text-2xl font-serif">Ma-Pe</p>
-            <p class="text-accent text-4xl font-serif my-4">10:00 - 15:00</p>
-            <p class="text-muted text-sm">Keittiö sulkeutuu klo 14:00</p>
+        
+        <div class="bg-dark p-6">
+          <h3 class="font-serif text-xl text-accent mb-6 text-center">Viikon lounaslista</h3>
+           
+          <div class="space-y-6">
+            {WEEKLY_LUNCH_MENU.map((day) => (
+              <div class="border-b border-surface pb-4">
+                <p class="text-light font-bold mb-2">{day.dayFi} {day.date}</p>
+                {day.dishes.map((dish) => (
+                  <p class="text-muted text-sm">{dish.dishFi}</p>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -620,7 +211,7 @@ const openingHours = [
       <h2 class="font-serif text-4xl md:text-5xl text-accent mb-6">Järjestätkö Juhlat?</h2>
       <p class="text-light/80 font-sans text-lg leading-relaxed mb-8">
         Pitopalvelumme pitää huolen onnistuneesta juhlastasi tai muusta tilaisuudestasi.
-        Räätälöidyt menut, ammattitaitoinen palvelu ja viihtyisät tilat – 
+        Räätälöidyt menyt, ammattitaitoinen palvelu ja viihtyisät tilat – 
         anna meidän tehdä päivästäsi ikimuistoinen.
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -636,6 +227,65 @@ const openingHours = [
         >
           Sähköposti
         </a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Sauna & Kabinetti Section -->
+  <section id="sauna" class="py-32 px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Sauna & Kabinetti</h2>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Yksityistilat 20 hengelle</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        <div>
+          <p class="text-light/80 font-sans text-lg leading-relaxed mb-6">
+            Käskynkän saunakabinetti on viihtyisä ja vastikään uusittu. Kabinettiin mahtuu 20 henkilöä. Tila sopii erinomaisesti kokouksiin ja pienempimuotoisiin koulutuksiin.
+          </p>
+          <p class="text-light/80 font-sans text-lg leading-relaxed mb-6">
+            Tarjoilemme haluamanne ruuat ja juomat kabinettiin, jotka voivat olla Ála Carte -listaltamme, tai tilauksesta valmistamme ruoka-annoksia myös toiveidenne mukaan ja lisäksi gluteenittomina ja laktoosittomina.
+          </p>
+          <p class="text-light/80 font-sans text-lg leading-relaxed mb-6">
+            Meillä löytyy A-oikeudet. Tilasta löytyy videotykki ja valkokangas. Kabinetin yhteydessä on omat wc-tilat.
+          </p>
+          
+          <div class="mt-8">
+            <a 
+              href="tel:+358173613411" 
+              class="inline-block px-8 py-4 bg-accent text-dark font-sans font-medium tracking-wider uppercase text-sm hover:bg-accent/90 transition-colors duration-300"
+            >
+              Varaa: 017 361 3411
+            </a>
+          </div>
+        </div>
+        
+        <div class="bg-surface p-8 border border-dark">
+          <h3 class="font-serif text-xl text-accent mb-6">Kabinetin Varustus</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start text-muted">
+              <span class="text-accent mr-3 mt-1">✓</span>
+              <span>20 hengen tilakapasiteetti</span>
+            </li>
+            <li class="flex items-start text-muted">
+              <span class="text-accent mr-3 mt-1">✓</span>
+              <span>Videotykki ja valkokangas</span>
+            </li>
+            <li class="flex items-start text-muted">
+              <span class="text-accent mr-3 mt-1">✓</span>
+              <span>Omat wc-tilat</span>
+            </li>
+            <li class="flex items-start text-muted">
+              <span class="text-accent mr-3 mt-1">✓</span>
+              <span>Gluteenittomat ja laktoosittomat ruokavaihtoehdot</span>
+            </li>
+            <li class="flex items-start text-muted">
+              <span class="text-accent mr-3 mt-1">✓</span>
+              <span>A-oikeudet</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -693,37 +343,6 @@ const openingHours = [
 </Layout>
 
 <script>
-  // Category tab switching
-  document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.category-tab')
-    const sections = document.querySelectorAll('.category-section')
-    
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const category = tab.getAttribute('data-category')
-        
-        // Update tab styles
-        tabs.forEach(t => {
-          t.classList.remove('bg-accent', 'text-dark')
-          t.classList.add('text-accent', 'hover:bg-accent/10')
-        })
-        tab.classList.remove('text-accent', 'hover:bg-accent/10')
-        tab.classList.add('bg-accent', 'text-dark')
-        
-        // Show/hide sections
-        sections.forEach(section => {
-          if (section.getAttribute('data-category') === category) {
-            section.classList.remove('hidden')
-            section.classList.add('block')
-          } else {
-            section.classList.remove('block')
-            section.classList.add('hidden')
-          }
-        })
-      })
-    })
-  })
-  
   // Handle checkout event from cart
   window.addEventListener('checkout', (e: Event) => {
     const customEvent = e as CustomEvent
