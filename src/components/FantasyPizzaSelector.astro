@@ -1,0 +1,168 @@
+---
+// Available toppings for Fantasia pizza
+export const FANTASY_TOPPINGS = [
+  'ananas', 'anjovis', 'aurajuusto', 'bearnaisekastike', 'broileri',
+  'salaattijuusto', 'herkkusieni', 'hillosipuli', 'jauheliha', 'jalopeno',
+  'kananmuna', 'kapris', 'katkarapu', 'kebab', 'kinkku',
+  'kylmäsavulohi', 'majoneesi', 'maustekurkku', 'oliivi', 'paholaisen hillo',
+  'paprika', 'pekoni', 'pepperoni', 'persikka', 'savupororouhe',
+  'meetvursti', 'sipuli', 'parsa', 'tomaatti', 'tonnikala', 'valkosipuli'
+] as const
+
+export type FantasyTopping = typeof FANTASY_TOPPINGS[number]
+
+export interface FantasyPizzaSelection {
+  toppings: FantasyTopping[]
+}
+---
+
+<div id="fantasy-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
+  <div class="bg-surface border border-accent max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-dark">
+      <h3 class="font-serif text-2xl text-accent">Fantasia Pizza</h3>
+      <p class="text-muted text-sm mt-2">Valitse neljä (4) täytettä</p>
+    </div>
+    
+    <div class="p-6">
+      <div id="topping-error" class="hidden bg-red-900/30 border border-red-500/50 text-red-200 p-3 mb-4 text-sm">
+        Valitse täsmälleen neljä täytettä
+      </div>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="toppings-grid">
+        {FANTASY_TOPPINGS.map((topping) => (
+          <label class="flex items-center gap-2 p-3 border border-dark hover:border-accent cursor-pointer transition-colors">
+            <input 
+              type="checkbox" 
+              value={topping} 
+              class="topping-checkbox w-4 h-4 accent-accent"
+            />
+            <span class="text-light text-sm capitalize">{topping}</span>
+          </label>
+        ))}
+      </div>
+      
+      <div class="mt-4 text-center">
+        <span id="topping-count" class="text-accent font-serif text-lg">0 / 4 valittu</span>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t border-dark flex gap-4">
+      <button 
+        id="cancel-fantasy" 
+        class="flex-1 py-3 border border-muted text-muted hover:border-accent hover:text-accent transition-colors uppercase tracking-wider text-sm"
+      >
+        Peruuta
+      </button>
+      <button 
+        id="confirm-fantasy" 
+        class="flex-1 py-3 bg-accent text-dark hover:bg-accent/90 transition-colors uppercase tracking-wider text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled
+      >
+        Lisää Tilaukseen
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { addToCart } from '../stores/cart.js'
+  
+  const modal = document.getElementById('fantasy-modal')
+  const toppingsGrid = document.getElementById('toppings-grid')
+  const checkboxes = document.querySelectorAll('.topping-checkbox') as NodeListOf<HTMLInputElement>
+  const countDisplay = document.getElementById('topping-count')
+  const confirmBtn = document.getElementById('confirm-fantasy') as HTMLButtonElement
+  const cancelBtn = document.getElementById('cancel-fantasy')
+  const errorDiv = document.getElementById('topping-error')
+  
+  let currentPrice = 14.80
+  
+  function updateCount() {
+    const selected = Array.from(checkboxes).filter(cb => cb.checked)
+    const count = selected.length
+    
+    if (countDisplay) {
+      countDisplay.textContent = `${count} / 4 valittu`
+    }
+    
+    if (confirmBtn) {
+      confirmBtn.disabled = count !== 4
+    }
+    
+    // Disable unchecked boxes if 4 already selected
+    checkboxes.forEach(cb => {
+      if (!cb.checked && count >= 4) {
+        cb.disabled = true
+      } else {
+        cb.disabled = false
+      }
+    })
+    
+    if (errorDiv) {
+      errorDiv.classList.add('hidden')
+    }
+  }
+  
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', updateCount)
+  })
+  
+  // Open modal function
+  window.openFantasyModal = function(price: number) {
+    currentPrice = price
+    if (modal) {
+      modal.classList.remove('hidden')
+      modal.classList.add('flex')
+    }
+    // Reset selections
+    checkboxes.forEach(cb => {
+      cb.checked = false
+      cb.disabled = false
+    })
+    updateCount()
+  }
+  
+  // Close modal function
+  function closeModal() {
+    if (modal) {
+      modal.classList.add('hidden')
+      modal.classList.remove('flex')
+    }
+  }
+  
+  cancelBtn?.addEventListener('click', closeModal)
+  
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal()
+    }
+  })
+  
+  confirmBtn?.addEventListener('click', () => {
+    const selected = Array.from(checkboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value)
+    
+    if (selected.length !== 4) {
+      if (errorDiv) {
+        errorDiv.classList.remove('hidden')
+      }
+      return
+    }
+    
+    // Add to cart with toppings
+    const menuItem = {
+      id: 'pizza-fantasia-' + Date.now(),
+      title: 'Fantasia (' + selected.join(', ') + ')',
+      category_id: 'pizzat',
+      price: currentPrice,
+      in_stock: true
+    }
+    
+    addToCart(menuItem)
+    closeModal()
+    
+    // Show success message
+    alert('Fantasia pizza lisätty tilaukseen!')
+  })
+</script>
