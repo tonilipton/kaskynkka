@@ -1,11 +1,17 @@
-import Stripe from 'stripe'
+import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set')
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+if (!STRIPE_SECRET_KEY) {
+  console.warn(
+    "STRIPE_SECRET_KEY is not set - Stripe functionality will be disabled",
+  );
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-12-18.acacia',
-})
+export const stripe = STRIPE_SECRET_KEY
+  ? new Stripe(STRIPE_SECRET_KEY, {
+      apiVersion: "2026-01-28.clover",
+    })
+  : (null as unknown as Stripe);
 
-export const STRIPE_CURRENCY = 'eur'
+export const STRIPE_CURRENCY = "eur";
