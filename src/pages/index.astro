@@ -15,13 +15,13 @@ const categories = [
   { id: 'lapsille', label: 'Lapsille', labelEn: 'For Children' },
 ]
 
-// All menu items with Finnish names and English descriptions
+// All menu items with Finnish names and descriptions
 const menuItems = [
   // Salaatit (Salads)
   {
     id: 'salaatti-1',
     title: 'Hedelmäinen Broilerisalaatti',
-    description: 'A fresh chicken salad with fruits. Perfect as a light meal or starter.',
+    description: 'Raikas broilerisalaatti hedelmillä. Sopii erinomaisesti kevyeksi ateriaksi tai alkuruoaksi.',
     price: 19.00,
     in_stock: true,
     category_id: 'salaatit'
@@ -29,7 +29,7 @@ const menuItems = [
   {
     id: 'salaatti-2',
     title: 'Lohi-Caesar-Salaatti',
-    description: 'Green salad with tomato, red onion, hot-smoked salmon, and Caesar dressing.',
+    description: 'Vihreää salaattia, tomaattia, punasipulia, lämminsavulohta ja Caesar-kastiketta.',
     price: 20.00,
     in_stock: true,
     category_id: 'salaatit'
@@ -39,7 +39,7 @@ const menuItems = [
   {
     id: 'lampima-1',
     title: 'Kolmen Pippurin Pihvi',
-    description: '160g beef tenderloin with creamy three-pepper sauce. Our signature dish!',
+    description: '160g naudan sisäfileepihvi kermaisella viherpippurikastikkeella. Talon suosikki!',
     price: 36.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -47,7 +47,7 @@ const menuItems = [
   {
     id: 'lampima-2',
     title: 'Metsästäjänpihvi',
-    description: "160g sliced beef tenderloin with rich chanterelle mushroom sauce. A Finnish classic!",
+    description: "160g viipaloitua naudan sisäfileetä täyteläisellä kanttarellikastikkeella. Suomalainen klassikko!",
     price: 33.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -55,7 +55,7 @@ const menuItems = [
   {
     id: 'lampima-3',
     title: 'Black & White -Pihvi',
-    description: '200g beef sirloin with Madeira and béarnaise sauces.',
+    description: '200g naudan ulkofileepihvi madeira- ja bearnaisekastikkeella.',
     price: 31.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -63,7 +63,7 @@ const menuItems = [
   {
     id: 'lampima-4',
     title: 'Talon Pihvi',
-    description: '200g beef sirloin with chanterelle sauce.',
+    description: '200g naudan ulkofileepihvi kanttarellikastikkeella.',
     price: 31.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -71,7 +71,7 @@ const menuItems = [
   {
     id: 'lampima-5',
     title: 'Grillipihvi',
-    description: '200g beef sirloin with garlic herb butter.',
+    description: '200g naudan ulkofileepihvi valkosipuliyrttivoilla.',
     price: 30.50,
     in_stock: true,
     category_id: 'lampimat'
@@ -79,7 +79,7 @@ const menuItems = [
   {
     id: 'lampima-6',
     title: 'Jättilehtipihvi',
-    description: '160g thin beef sirloin with grill seasoning butter.',
+    description: '160g ohut naudan ulkofileepihvi grillimaustevoilla.',
     price: 29.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -87,7 +87,7 @@ const menuItems = [
   {
     id: 'lampima-7',
     title: 'Bearnaisepihvi',
-    description: '160g pork sirloin with béarnaise sauce.',
+    description: '160g porsaan ulkofileepihvi bearnaisekastikkeella.',
     price: 25.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -95,7 +95,7 @@ const menuItems = [
   {
     id: 'lampima-8',
     title: 'Porsaanselykset Dijonkastike',
-    description: '2x80g pork sirloin steaks with Dijon mustard sauce.',
+    description: '2x80g porsaan ulkofileepihvit dijon-sinappikastikkeella.',
     price: 25.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -103,7 +103,7 @@ const menuItems = [
   {
     id: 'lampima-9',
     title: 'Pariloitua Maksaa',
-    description: 'Grilled liver with crispy bacon, lingonberries, and cream sauce.',
+    description: 'Pariloitua maksaa, rapeaa pekonia, puolukoita ja kermakastiketta.',
     price: 25.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -111,7 +111,7 @@ const menuItems = [
   {
     id: 'lampima-10',
     title: 'Aurajuusto-Persikkakuorrutettua Broilerinfileetä',
-    description: 'Chicken breast fillet with blue cheese and peach topping.',
+    description: 'Broilerin rintafileetä aurajuusto-persikkakuorrutteella.',
     price: 25.50,
     in_stock: true,
     category_id: 'lampimat'
@@ -119,7 +119,7 @@ const menuItems = [
   {
     id: 'lampima-11',
     title: 'Broileria ja Mustaherukka-Portviinikastiketta',
-    description: 'Chicken breast with blackcurrant-port wine sauce.',
+    description: 'Broilerin rintafileetä mustaherukka-portviinikastikkeella.',
     price: 25.50,
     in_stock: true,
     category_id: 'lampimat'
@@ -127,7 +127,7 @@ const menuItems = [
   {
     id: 'lampima-12',
     title: 'Paistetut Muikut',
-    description: 'Fried vendace - fresh whitefish from Finnish waters.',
+    description: 'Paistettuja muikkuja – tuoretta järvikalaa kotimaan vesiltä.',
     price: 25.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -135,7 +135,7 @@ const menuItems = [
   {
     id: 'lampima-13',
     title: 'Savustettua Lohta',
-    description: '160g smoked salmon fillet with remoulade sauce.',
+    description: '160g savulohifilee remoulade-kastikkeella.',
     price: 29.50,
     in_stock: true,
     category_id: 'lampimat'
@@ -143,7 +143,7 @@ const menuItems = [
   {
     id: 'lampima-14',
     title: 'Gratinoitu Espanjalainen Kasvispaistos',
-    description: 'Spanish vegetable gratin with grilled vegetables, feta cheese cubes, and béarnaise.',
+    description: 'Espanjalainen kasvispaistos, jossa grillattuja vihanneksia, fetajuustokuutioita ja bearnaisekastiketta.',
     price: 21.50,
     in_stock: true,
     category_id: 'lampimat'
@@ -151,7 +151,7 @@ const menuItems = [
   {
     id: 'lampima-15',
     title: 'Välimeren Kanaleipä',
-    description: 'White bread with chicken breast and Mediterranean mayonnaise.',
+    description: 'Valkoista leipää broilerin rintafileellä ja välimerellisellä majoneesilla.',
     price: 25.00,
     in_stock: true,
     category_id: 'lampimat'
@@ -159,7 +159,7 @@ const menuItems = [
   {
     id: 'lampima-16',
     title: 'Oskarin Leipä',
-    description: 'White bread with beef sirloin, choron sauce, shrimp, and asparagus.',
+    description: 'Valkoista leipää naudan ulkofileellä, choron-kastikkeella, katkaravuilla ja parsalla.',
     price: 29.50,
     in_stock: true,
     category_id: 'lampimat'
@@ -169,7 +169,7 @@ const menuItems = [
   {
     id: 'burger-1',
     title: 'Hampurilainen',
-    description: 'Beef patty with lettuce and mayo. Includes French fries.',
+    description: 'Nautapihvi, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
     price: 14.00,
     in_stock: true,
     category_id: 'hampurilaiset'
@@ -177,7 +177,7 @@ const menuItems = [
   {
     id: 'burger-2',
     title: 'Juustohampurilainen',
-    description: 'Beef patty with cheese, lettuce and mayo. Includes French fries.',
+    description: 'Nautapihvi, juustoa, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
     price: 14.70,
     in_stock: true,
     category_id: 'hampurilaiset'
@@ -185,7 +185,7 @@ const menuItems = [
   {
     id: 'burger-3',
     title: 'Ananashampurilainen',
-    description: 'Beef patty with pineapple ring, lettuce and mayo. Includes French fries.',
+    description: 'Nautapihvi, ananasrengas, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
     price: 14.70,
     in_stock: true,
     category_id: 'hampurilaiset'
@@ -193,7 +193,7 @@ const menuItems = [
   {
     id: 'burger-4',
     title: 'Munahampurilainen',
-    description: 'Beef patty with fried egg, lettuce and mayo. Includes French fries.',
+    description: 'Nautapihvi, paistettu kananmuna, salaattia ja majoneesia. Sisältää ranskalaiset perunat.',
     price: 14.70,
     in_stock: true,
     category_id: 'hampurilaiset'
@@ -201,7 +201,7 @@ const menuItems = [
   {
     id: 'burger-5',
     title: 'Special-Hampurilainen',
-    description: 'Two beef patties, bacon, egg, cheese, pineapple ring. Includes French fries.',
+    description: 'Kaksi nautapihviä, pekonia, kananmunaa, juustoa ja ananasrengas. Sisältää ranskalaiset perunat.',
     price: 20.00,
     in_stock: true,
     category_id: 'hampurilaiset'
@@ -211,7 +211,7 @@ const menuItems = [
   {
     id: 'pizza-1',
     title: 'Tropicana',
-    description: 'Ham and pineapple.',
+    description: 'Kinkkua ja ananasta.',
     price: 14.00,
     in_stock: true,
     category_id: 'pizzat'
@@ -219,7 +219,7 @@ const menuItems = [
   {
     id: 'pizza-2',
     title: 'Bolognese',
-    description: 'Minced meat.',
+    description: 'Jauhelihaa.',
     price: 13.30,
     in_stock: true,
     category_id: 'pizzat'
@@ -227,7 +227,7 @@ const menuItems = [
   {
     id: 'pizza-3',
     title: 'Quatro Stagioni',
-    description: 'Ham, mushrooms, shrimp, and tuna.',
+    description: 'Kinkkua, herkkusieniä, katkarapuja ja tonnikalaa.',
     price: 14.80,
     in_stock: true,
     category_id: 'pizzat'
@@ -235,7 +235,7 @@ const menuItems = [
   {
     id: 'pizza-4',
     title: 'Vegetariana',
-    description: 'Bell pepper, asparagus, onion, tomato, and mushrooms.',
+    description: 'Paprikaa, parsaa, sipulia, tomaattia ja herkkusieniä.',
     price: 14.80,
     in_stock: true,
     category_id: 'pizzat'
@@ -243,7 +243,7 @@ const menuItems = [
   {
     id: 'pizza-5',
     title: 'Meetvurstipizza',
-    description: 'Salami.',
+    description: 'Salamia.',
     price: 14.00,
     in_stock: true,
     category_id: 'pizzat'
@@ -251,7 +251,7 @@ const menuItems = [
   {
     id: 'pizza-6',
     title: 'Opera',
-    description: 'Ham and tuna.',
+    description: 'Kinkkua ja tonnikalaa.',
     price: 14.00,
     in_stock: true,
     category_id: 'pizzat'
@@ -259,7 +259,7 @@ const menuItems = [
   {
     id: 'pizza-7',
     title: 'Opera Special',
-    description: 'Ham, tuna, and salami.',
+    description: 'Kinkkua, tonnikalaa ja salamia.',
     price: 14.80,
     in_stock: true,
     category_id: 'pizzat'
@@ -267,7 +267,7 @@ const menuItems = [
   {
     id: 'pizza-8',
     title: 'Käskynkkä Special',
-    description: 'Chicken, peach, blue cheese, and béarnaise sauce.',
+    description: 'Broileria, persikkaa, aurajuustoa ja bearnaisekastiketta.',
     price: 14.80,
     in_stock: true,
     category_id: 'pizzat'
@@ -275,7 +275,7 @@ const menuItems = [
   {
     id: 'pizza-9',
     title: 'Fantasia',
-    description: 'Choose four toppings of your choice!',
+    description: 'Valitse neljä vapaavalintaista täytettä!',
     price: 14.80,
     in_stock: true,
     category_id: 'pizzat'
@@ -285,7 +285,7 @@ const menuItems = [
   {
     id: 'jalkiruoka-1',
     title: 'Mango-Melonijäätelöä ja Suklaakastiketta',
-    description: 'Mango-melon ice cream with chocolate sauce.',
+    description: 'Mango-melonijäätelöä suklaakastikkeella.',
     price: 9.00,
     in_stock: true,
     category_id: 'jalkiruoat'
@@ -293,7 +293,7 @@ const menuItems = [
   {
     id: 'jalkiruoka-2',
     title: 'Mustikkakukkoa ja Vaniljajäätelöä',
-    description: 'Blueberry crumble with vanilla ice cream.',
+    description: 'Mustikkakukkoa ja vaniljajäätelöä.',
     price: 10.00,
     in_stock: true,
     category_id: 'jalkiruoat'
@@ -301,7 +301,7 @@ const menuItems = [
   {
     id: 'jalkiruoka-3',
     title: 'Ohukaiset',
-    description: 'A full pan of Finnish pancakes with raspberry jam and whipped cream.',
+    description: 'Pannullinen muurinpohjalettuja vadelmahillon ja kermavaahdon kera.',
     price: 10.50,
     in_stock: true,
     category_id: 'jalkiruoat'
@@ -311,7 +311,7 @@ const menuItems = [
   {
     id: 'lapsi-1',
     title: 'Maistuva Jauhelihapihvi',
-    description: 'Tasty beef patty with béarnaise sauce and French fries.',
+    description: 'Maistuva jauhelihapihvi bearnaisekastikkeella ja ranskalaisilla perunoilla.',
     price: 10.80,
     in_stock: true,
     category_id: 'lapsille'
@@ -319,7 +319,7 @@ const menuItems = [
   {
     id: 'lapsi-2',
     title: "Äidin Lihapullat",
-    description: "Mom's meatballs with cream sauce and mashed potatoes.",
+    description: "Äidin lihapullat kermakastikkeella ja perunamuusilla.",
     price: 11.00,
     in_stock: true,
     category_id: 'lapsille'
@@ -327,7 +327,7 @@ const menuItems = [
   {
     id: 'lapsi-3',
     title: 'Herkkupihvi',
-    description: 'Pork patty with pineapple ring and mashed potatoes.',
+    description: 'Porsaanpihvi ananasrenkaalla ja perunamuusilla.',
     price: 13.00,
     in_stock: true,
     category_id: 'lapsille'
@@ -335,7 +335,7 @@ const menuItems = [
   {
     id: 'lapsi-4',
     title: 'Nauravat Nakit',
-    description: '"Smiling" sausages with mayonnaise and French fries.',
+    description: 'Nauravat nakit majoneesilla ja ranskalaisilla perunoilla.',
     price: 10.50,
     in_stock: true,
     category_id: 'lapsille'
@@ -343,7 +343,7 @@ const menuItems = [
   {
     id: 'lapsi-5',
     title: 'Iso Lehtipihvi',
-    description: 'Large thin beef sirloin with herb butter and French fries.',
+    description: 'Iso lehtipihvi maustevoilla ja ranskalaisilla perunoilla.',
     price: 15.30,
     in_stock: true,
     category_id: 'lapsille'
@@ -357,23 +357,23 @@ const lunchInfo = {
   includes: ['Runsas salaattipöytä', 'Alkuruoka', 'Juomat', 'Leipä', 'Pääruoka', 'Kahvi & jälkiruoka']
 }
 
-// Real testimonials from restaurant_info.md
+// Fixed testimonials
 const testimonials = [
   {
-    text: "Todella erinomainen lihakalastus. Liha on pehmeää ja maustavaa. Monia lisävalintoja ja laaja salaattipöytä sisältyy aterian hintaan.",
+    text: "Erinomainen pihviravintola. Liha on mureaa ja maukasta. Aterian hintaan sisältyy useita lisukevaihtoehtoja sekä runsas salaattipöytä.",
     rating: 5
   },
   {
-    text: "Lounasbuffetin salaattivalikoima on erinomainen, ja annostukset ovat yllättävän suuria. Täysin täynnä olet varmasti, kun lähtevät",
+    text: "Lounasbuffetin salaattivalikoima on erinomainen, ja annoskoot ovat yllättävän suuria. Täältä ei todellakaan tarvitse lähteä nälkäisenä.",
     rating: 5
   },
   {
-    text: "Makuullinen ruoka ja rauhallinen tunnelma johtavat ateriaan. Suosittava valinta lihaisille ruokailijoille",
+    text: "Herkullista ruokaa ja rauhallinen tunnelma jopa kiireisinä lounasaikoina. Lämmin suositus lihan ystäville.",
     rating: 5
   }
 ]
 
-// Opening hours from restaurant_info.md
+// Opening hours
 const openingHours = [
   { day: 'Maanantai - Torstai', hours: '10:00 - 20:00', note: 'Keittiö sulkeutuu klo 19:00' },
   { day: 'Perjantai', hours: '10:00 - 21:00', note: 'Keittiö sulkeutuu klo 20:00' },
@@ -385,7 +385,6 @@ const openingHours = [
 <Layout title="Ravintola Käskynkkä | Lounas, Á La Carte ja Pitopalvelu Kuopiossa">
   <Hero />
   
-  <!-- Services Section -->
   <section id="services" class="py-32 px-4 bg-surface">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16">
@@ -394,7 +393,6 @@ const openingHours = [
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Lunch -->
         <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
           <div class="text-5xl mb-6">🍽️</div>
           <h3 class="font-serif text-2xl text-light mb-4">Lounasbuffet</h3>
@@ -402,8 +400,7 @@ const openingHours = [
           <p class="text-accent font-serif text-3xl mb-4">€{lunchInfo.price.toFixed(2)}</p>
           <p class="text-muted/80 text-sm">Sisältää runsaan salaattipöydän, alkuruuan, juomat, leivän, pääruuan, kahvin ja jälkiruuan</p>
         </div>
-        
-        <!-- A La Carte -->
+  
         <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
           <div class="text-5xl mb-6">🥩</div>
           <h3 class="font-serif text-2xl text-light mb-4">Á La Carte</h3>
@@ -412,7 +409,6 @@ const openingHours = [
           <p class="text-muted/80 text-sm">Korkealaatuiset lihatuotteet ja reilut annoskoot ovat intohimomme</p>
         </div>
         
-        <!-- Catering -->
         <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
           <div class="text-5xl mb-6">🎉</div>
           <h3 class="font-serif text-2xl text-light mb-4">Pitopalvelu</h3>
@@ -421,7 +417,6 @@ const openingHours = [
           <p class="text-muted/80 text-sm">Räätälöidyt menut juhliin ja tilaisuuksiin - anna meidän huolehtia onnistuneesta päivästäsi</p>
         </div>
         
-        <!-- Sauna -->
         <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
           <div class="text-5xl mb-6">🧖</div>
           <h3 class="font-serif text-2xl text-light mb-4">Sauna & Kabinetti</h3>
@@ -433,7 +428,6 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- Menu Section with Category Tabs -->
   <section id="menu" class="py-32 px-4">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-12">
@@ -442,13 +436,11 @@ const openingHours = [
       </div>
       
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Menu Items with Tabs -->
         <div class="lg:col-span-2">
           <p class="text-muted text-center mb-8">
             Valitse suosikkiannoksesi ja tee tilaus suoraan verkossa. Nouto ravintolasta.
           </p>
           
-          <!-- Category Tabs -->
           <div class="flex flex-wrap justify-center gap-2 mb-8" id="category-tabs">
             {categories.map((cat, index) => (
               <button 
@@ -459,8 +451,7 @@ const openingHours = [
               </button>
             ))}
           </div>
-          
-          <!-- Menu Items by Category -->
+  
           <div id="menu-items-container">
             {categories.map((cat, index) => {
               const items = menuItems.filter(item => item.category_id === cat.id)
@@ -488,7 +479,6 @@ const openingHours = [
           </div>
         </div>
         
-        <!-- Cart Sidebar -->
         <aside class="lg:col-span-1">
           <div class="sticky top-8">
             <Cart client:load />
@@ -498,7 +488,6 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- Lunch Buffet Info -->
   <section id="lunch" class="py-32 px-4 bg-surface">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-16">
@@ -533,7 +522,6 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- Testimonials Section -->
   <section id="testimonials" class="py-32 px-4">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16">
@@ -563,7 +551,6 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- About Section -->
   <section id="about" class="py-32 px-4 bg-surface">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="font-serif text-4xl md:text-5xl text-accent mb-8">Tarinamme</h2>
@@ -572,12 +559,12 @@ const openingHours = [
         Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola Kuopion Jynkän kaupunginosassa.
       </p>
       <p class="text-light/80 font-sans text-lg leading-relaxed mb-8">
-        Hyvä ruoka rakentuu kokemuksesta ja laadukkaista raaka-aineista. 
-        Maistuvaa ruokaa meiltä saikin niin lounasaikaan kuin Á la Carte -listaltamme reiluina annoksina. 
+        Hyvä ruoka rakentuu kokemuksesta ja laadukkaista raaka-aineista.
+        Maistuvaa ruokaa meiltä saikin niin lounasaikaan kuin Á la Carte -listaltamme reiluina annoksina.
         Pitopalvelumme sitä vastoin pitää huolen onnistuneesta juhlastasi tai muusta tilaisuudestasi.
       </p>
       <p class="text-light/80 font-sans text-lg leading-relaxed mb-12">
-        Mutta mitä olisikaan hyvä ruoka ilman oikeanlaista tunnelmaa? 
+        Mutta mitä olisikaan hyvä ruoka ilman oikeanlaista tunnelmaa?
         Viihtyisän fiiliksen meille luo modernit tilamme ja ammattitaitoinen, palveleva henkilökuntamme.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
@@ -597,7 +584,6 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- Opening Hours Section -->
   <section id="hours" class="py-32 px-4">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-16">
@@ -629,12 +615,11 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- Catering CTA Section -->
   <section id="catering" class="py-32 px-4 bg-surface">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="font-serif text-4xl md:text-5xl text-accent mb-6">Järjestätkö Juhlat?</h2>
       <p class="text-light/80 font-sans text-lg leading-relaxed mb-8">
-        Pitopalvelumme pitää huolen onnistuneesta juhlastasi tai muusta tilaisuudestasi. 
+        Pitopalvelumme pitää huolen onnistuneesta juhlastasi tai muusta tilaisuudestasi.
         Räätälöidyt menut, ammattitaitoinen palvelu ja viihtyisät tilat – 
         anna meidän tehdä päivästäsi ikimuistoinen.
       </p>
@@ -655,14 +640,13 @@ const openingHours = [
     </div>
   </section>
   
-  <!-- Footer -->
   <footer id="footer" class="py-16 px-4 border-t border-surface">
     <div class="max-w-6xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-5 gap-8 text-center md:text-left">
         <div class="md:col-span-2">
           <h3 class="font-serif text-2xl text-accent mb-4">Ravintola Käskynkkä</h3>
           <p class="text-muted text-sm mb-4">
-            Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola Kuopion Jynkässä. 
+            Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola Kuopion Jynkässä.
             Lounas, Á La Carte ja pitopalvelu.
           </p>
           <p class="text-muted/60 text-xs">
