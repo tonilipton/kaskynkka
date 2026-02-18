@@ -2,6 +2,8 @@
 import Layout from '../../layouts/Layout.astro'
 import { getSupabaseClient } from '../../lib/supabaseClient'
 
+export const prerender = false
+
 const { id } = Astro.params
 
 let order = null
