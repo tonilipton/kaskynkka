@@ -1,0 +1,13 @@
+# Handle line endings automatically
+* text=auto eol=lf
+
+# Treat these files as binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.woff binary
+*.woff2 binary
