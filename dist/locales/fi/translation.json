@@ -1,0 +1,170 @@
+{
+  "nav": {
+    "home": "Etusivu",
+    "menu": "Menu",
+    "services": "Palvelut",
+    "about": "Tarinamme",
+    "hours": "Aukioloajat",
+    "contact": "Yhteystiedot"
+  },
+  "hero": {
+    "title": "RAVINTOLA KÄSKYNKKÄ",
+    "subtitle": "Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola",
+    "cta_menu": "Katso Menu",
+    "cta_story": "Tutustu"
+  },
+  "services": {
+    "title": "Palvelumme",
+    "subtitle": "Lounas, Á La Carte ja Pitopalvelu",
+    "lunch": {
+      "title": "Lounasbuffet",
+      "description": "Runsas lounasbuffet arkisin",
+      "price_label": "hinta",
+      "includes": "Sisältää runsaan salaattipöydän, alkuruuan, juomat, leivän, pääruuan, kahvin ja jälkiruuan"
+    },
+    "alacarte": {
+      "title": "Á La Carte",
+      "description": "Tunnettu runsaista pihviaterioista",
+      "quality": "Laatu",
+      "detail": "Korkealaatuiset lihatuotteet ja reilut annoskoot ovat intohimomme"
+    },
+    "catering": {
+      "title": "Pitopalvelu",
+      "description": "Yksityistilaisuudet & Yritystapahtumat",
+      "full": "Täysi",
+      "detail": "Räätälöidyt menut juhliin ja tilaisuuksiin - anna meidän huolehtia onnistuneesta päivästäsi"
+    },
+    "sauna": {
+      "title": "Sauna & Kabinetti",
+      "description": "Yksityistilat ryhmille",
+      "book": "Varaa",
+      "detail": "Saunatilat ja kabinetit saatavilla ryhmävarauksiin - täydellinen illanviettoon"
+    }
+  },
+  "menu": {
+    "title": "Á La Carte - Suosikkiannoksemme",
+    "subtitle": "Tunnettu runsaista pihviaterioista ja korkealaatuisesta lihasta",
+    "description": "Valitse suosikkiannoksesi ja tee tilaus suoraan verkossa. Nouto ravintolasta tai nauti paikan päällä.",
+    "availability_note": "Kysy lisää vaihtoehdoista henkilökunnaltamme. Saatavuus voi vaihdella.",
+    "add_to_order": "Lisää Tilaukseen",
+    "added": "Lisätty!",
+    "sold_out": "Loppuunmyyty"
+  },
+  "dishes": {
+    "three_pepper_steak": {
+      "title": "Three-Pepper Steak",
+      "description": "Beef tenderloin with a signature pepper sauce. Our most popular dish, renowned for generous portions and exceptional flavor."
+    },
+    "hunters_steak": {
+      "title": "Hunter's Steak",
+      "description": "Served with a rich chanterelle mushroom sauce. A Finnish classic with deep, earthy flavors."
+    },
+    "grilled_liver": {
+      "title": "Grilled Liver",
+      "description": "Served with crispy bacon - a local favorite. Traditional Finnish comfort food at its finest."
+    },
+    "smoked_salmon": {
+      "title": "Smoked Salmon",
+      "description": "Served with remoulade sauce. Fresh, delicate flavors from the Nordic waters."
+    }
+  },
+  "lunch": {
+    "title": "Lounasbuffet",
+    "subtitle": "Arkisin Mon-Fri 10:00 - 15:00",
+    "description": "Runsas lounasbuffet, joka sisältää kaiken tarvitsemasi täydelliseen lounashetkeen.",
+    "hours_title": "Aukioloajat",
+    "days": "Ma-Pe",
+    "kitchen_closes": "Keittiö sulkeutuu klo 14:00",
+    "includes": {
+      "salad_bar": "Runsas salaattipöytä",
+      "starters": "Alkuruuat",
+      "drinks": "Juomat",
+      "bread": "Leipä",
+      "main_course": "Pääruoka",
+      "coffee_dessert": "Kahvi ja jälkiruoka"
+    }
+  },
+  "cart": {
+    "title": "Tilauksesi",
+    "empty": "Ostoskorisi on tyhjä",
+    "items_count": "tuote",
+    "items_count_plural": "tuotetta",
+    "total": "Yhteensä",
+    "checkout": "Siirry Kassalle",
+    "clear": "Tyhjennä Kori",
+    "quantity": "Määrä"
+  },
+  "testimonials": {
+    "title": "Asiakaspalautteet",
+    "subtitle": "Mitä asiakkaamme sanovat",
+    "rating": "4.5 / 5",
+    "reviews": [
+      {
+        "text": "Outstanding as a steakhouse. The meat is tender and flavorful. Multiple side options and a massive salad bar are included in the meal price.",
+        "author": "Asiakas 1"
+      },
+      {
+        "text": "The salad selection in the lunch buffet is excellent, and the portion sizes are surprisingly large. You definitely won't leave hungry.",
+        "author": "Asiakas 2"
+      },
+      {
+        "text": "Delicious food and a calm atmosphere even during the busy lunch hours. Highly recommended for meat lovers.",
+        "author": "Asiakas 3"
+      }
+    ]
+  },
+  "about": {
+    "title": "Tarinamme",
+    "p1": "Käskynkkä – yhtä aikaa moderni ja perinteinen, rento ja tyylikäs. Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola Kuopion Jynkän kaupunginosassa.",
+    "p2": "Hyvä ruoka rakentuu kokemuksesta ja laadukkaista raaka-aineista. Maistuvaa ruokaa meiltä saikin niin lounasaikaan kuin Á la Carte -listaltamme reiluina annoksina. Pitopalvelumme sitä vastoin pitää huolen onnistuneesta juhlastasi tai muusta tilaisuudestasi.",
+    "p3": "Mutta mitä olisikaan hyvä ruoka ilman oikeanlaista tunnelmaa? Viihtyisän fiiliksen meille luo modernit tilamme ja ammattitaitoinen, palveleva henkilökuntamme.",
+    "stats": {
+      "rating": "Google Arvostelu",
+      "location": "Kuopio",
+      "style": "Perinteet & Moderni Tyyli"
+    }
+  },
+  "hours": {
+    "title": "Aukioloajat",
+    "subtitle": "Tervetuloa!",
+    "mon_thu": "Maanantai - Torstai",
+    "fri": "Perjantai",
+    "sat": "Lauantai",
+    "sun": "Sunnuntai",
+    "kitchen_note": "Keittiö sulkeutuu",
+    "events_note": "Tapahtumajatkot",
+    "private_events": "Yksityistilaisuudet saatavilla"
+  },
+  "catering": {
+    "title": "Järjestätkö Juhlat?",
+    "description": "Pitopalvelumme pitää huolen onnistuneesta juhlastasi tai muusta tilaisuudestasi. Räätälöidyt menut, ammattitaitoinen palvelu ja viihtyisät tilat – anna meidän tehdä päivästäsi ikimuistoinen.",
+    "call": "Soita: 017 361 3411",
+    "email": "Sähköposti"
+  },
+  "footer": {
+    "description": "Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola Kuopion Jynkässä. Lounas, Á La Carte ja pitopalvelu.",
+    "business_id": "Y-tunnus",
+    "owner": "Omistaja",
+    "contact": "Yhteystiedot",
+    "address": "Soikkokuja 12, 70780 Kuopio",
+    "phone": "017 361 3411",
+    "email": "palaute@kaskynkka.net",
+    "hours": "Aukioloajat",
+    "follow_us": "Seuraa meitä",
+    "facebook": "Facebook",
+    "copyright": "Kaikki oikeudet pidätetään"
+  },
+  "checkout": {
+    "title": "Viimeistele Tilaus",
+    "subtitle": "Turvallinen maksu Stripen kautta",
+    "order_summary": "Tilauksen Yhteenveto",
+    "customer_info": "Asiakastiedot",
+    "name_label": "Nimesi (Valinnainen)",
+    "name_placeholder": "Syötä nimesi",
+    "proceed": "Siirry Maksamaan",
+    "processing": "Käsitellään...",
+    "back_to_menu": "Takaisin Menuun",
+    "error": "Tapahtui virhe. Yritä uudelleen.",
+    "canceled": "Maksu peruutettu. Voit yrittää uudelleen."
+  }
+}

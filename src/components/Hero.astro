@@ -1,0 +1,76 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  backgroundImage?: string;
+}
+
+const { 
+  title = 'RAVINTOLA KÄSKYNKKÄ',
+  subtitle = 'Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola',
+  backgroundImage = '/images/IMG_3046-1024x682.jpg'
+} = Astro.props;
+---
+
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- Background Image with Overlay -->
+  <div class="absolute inset-0 z-0">
+    <img 
+      src={backgroundImage} 
+      alt="Restaurant ambiance"
+      class="w-full h-full object-cover"
+      onerror="this.style.display='none'"
+    />
+    <div class="absolute inset-0 bg-black/60"></div>
+  </div>
+  
+  <!-- Content -->
+  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+    <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-light tracking-ultra uppercase mb-6">
+      {title}
+    </h1>
+    <p class="font-sans text-lg md:text-xl text-muted tracking-widest uppercase mb-12">
+      {subtitle}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a 
+        href="#menu" 
+        class="inline-block px-8 py-4 bg-accent text-dark font-sans font-medium tracking-wider uppercase text-sm hover:bg-accent/90 transition-colors duration-300"
+      >
+        View Menu
+      </a>
+      <a 
+        href="#about" 
+        class="inline-block px-8 py-4 border border-accent text-accent font-sans font-medium tracking-wider uppercase text-sm hover:bg-accent hover:text-dark transition-colors duration-300"
+      >
+        Our Story
+      </a>
+    </div>
+  </div>
+  
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+    <a href="#menu" class="flex flex-col items-center text-muted hover:text-accent transition-colors duration-300">
+      <span class="text-xs uppercase tracking-widest mb-2">Scroll</span>
+      <svg 
+        class="w-6 h-6 animate-bounce" 
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* Fallback for when image doesn't load */
+  section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    z-index: -1;
+  }
+</style>

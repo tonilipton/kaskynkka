@@ -1,0 +1,169 @@
+---
+import Navigation from '../components/Navigation.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+}
+
+const { 
+  title = 'Ravintola Käskynkkä',
+  description = 'Ravintola Käskynkkä - Fine dining in Kuopio',
+  ogImage = '/images/og-image.jpg',
+  canonicalUrl
+} = Astro.props;
+
+// Get current locale from URL
+const currentLocale = Astro.url.pathname.startsWith('/en') ? 'en' : 'fi';
+
+// Set html lang attribute
+const htmlLang = currentLocale;
+
+// Site URL
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://kaskynkka.net';
+const canonical = canonicalUrl || `${siteUrl}${Astro.url.pathname}`;
+
+// JSON-LD Restaurant Schema
+const restaurantSchema = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Ravintola Käskynkkä",
+  "description": description,
+  "url": siteUrl,
+  "telephone": "+358 50 123 4567",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Soikkokuja 12",
+    "addressLocality": "Kuopio",
+    "postalCode": "70780",
+    "addressCountry": "FI"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 62.8924,
+    "longitude": 27.6782
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "11:00",
+      "closes": "22:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Saturday"],
+      "opens": "12:00",
+      "closes": "23:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Sunday"],
+      "opens": "12:00",
+      "closes": "21:00"
+    }
+  ],
+  "servesCuisine": ["Finnish", "Nordic", "European"],
+  "priceRange": "€€",
+  "image": `${siteUrl}${ogImage}`,
+  "acceptsReservations": "True"
+};
+---
+
+<!DOCTYPE html>
+<html lang={htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="ravintola, restaurant, kuopio, finnish cuisine, nordic food, fine dining, käskynkkä" />
+    <meta name="author" content="Ravintola Käskynkkä" />
+    <meta name="robots" content="index, follow" />
+    
+    <title>{title}</title>
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonical} />
+    
+    <!-- Alternate Languages -->
+    <link rel="alternate" hreflang="fi" href={`${siteUrl}${Astro.url.pathname.replace('/en', '')}`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/en${Astro.url.pathname.replace('/en', '')}`} />
+    <link rel="alternate" hreflang="x-default" href={siteUrl} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={currentLocale === 'fi' ? 'fi_FI' : 'en_US'} />
+    <meta property="og:site_name" content="Ravintola Käskynkkä" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonical} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={`${siteUrl}${ogImage}`} />
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(restaurantSchema)} />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Preconnect to Supabase -->
+    <link rel="preconnect" href="https://your-supabase-project.supabase.co" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+  <body class="bg-dark text-light font-sans min-h-screen pt-20">
+    <Navigation currentLocale={currentLocale} />
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Global styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #121212;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #C4A484;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d4b494;
+  }
+  
+  /* Offset for fixed header */
+  section[id] {
+    scroll-margin-top: 80px;
+  }
+</style>

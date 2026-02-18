@@ -1,0 +1,98 @@
+---
+import LanguageToggle from './LanguageToggle.astro';
+
+interface Props {
+  currentLocale?: string;
+}
+
+const { currentLocale = 'fi' } = Astro.props;
+
+// Navigation items
+const navItems = [
+  { href: '#services', labelFi: 'Palvelut', labelEn: 'Services' },
+  { href: '#menu', labelFi: 'Menu', labelEn: 'Menu' },
+  { href: '#about', labelFi: 'Tarinamme', labelEn: 'Our Story' },
+  { href: '#hours', labelFi: 'Aukioloajat', labelEn: 'Hours' },
+  { href: '#contact', labelFi: 'Yhteystiedot', labelEn: 'Contact' },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-dark/90 backdrop-blur-sm border-b border-surface">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <!-- Logo -->
+      <a href="/" class="flex items-center">
+        <span class="font-serif text-2xl text-accent tracking-wider">KÄSKYNKKÄ</span>
+      </a>
+      
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-8">
+        {navItems.map((item) => (
+          <a 
+            href={item.href}
+            class="text-light/80 hover:text-accent transition-colors duration-300 text-sm uppercase tracking-wider"
+          >
+            {currentLocale === 'fi' ? item.labelFi : item.labelEn}
+          </a>
+        ))}
+        <LanguageToggle currentLocale={currentLocale} />
+      </nav>
+      
+      <!-- Mobile Menu Button -->
+      <div class="flex items-center gap-4 md:hidden">
+        <LanguageToggle currentLocale={currentLocale} />
+        <button 
+          id="mobile-menu-btn"
+          class="text-light hover:text-accent transition-colors p-2"
+          aria-label="Toggle menu"
+        >
+          <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+          <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-dark border-t border-surface">
+    <div class="px-4 py-6 space-y-4">
+      {navItems.map((item) => (
+        <a 
+          href={item.href}
+          class="block text-light/80 hover:text-accent transition-colors duration-300 text-lg uppercase tracking-wider py-2"
+        >
+          {currentLocale === 'fi' ? item.labelFi : item.labelEn}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+  
+  if (mobileMenuBtn && mobileMenu && menuIcon && closeIcon) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    });
+    
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      });
+    });
+  }
+</script>

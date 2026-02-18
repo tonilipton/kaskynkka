@@ -1,0 +1,389 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Hero from '../../components/Hero.astro'
+import MenuItem from '../../components/MenuItem.astro'
+import Cart from '../../components/Cart.astro'
+
+// Menu items - keep Finnish names for authenticity but English descriptions
+const signatureDishes = [
+  {
+    id: '1',
+    title: 'Three-Pepper Steak',
+    description: 'Beef tenderloin with a signature pepper sauce. Our most popular dish, renowned for generous portions and exceptional flavor.',
+    price: 32.00,
+    in_stock: true,
+    category_id: 'steaks'
+  },
+  {
+    id: '2',
+    title: "Hunter's Steak",
+    description: 'Served with a rich chanterelle mushroom sauce. A Finnish classic with deep, earthy flavors.',
+    price: 30.00,
+    in_stock: true,
+    category_id: 'steaks'
+  },
+  {
+    id: '3',
+    title: 'Grilled Liver',
+    description: 'Served with crispy bacon - a local favorite. Traditional Finnish comfort food at its finest.',
+    price: 24.00,
+    in_stock: true,
+    category_id: 'classics'
+  },
+  {
+    id: '4',
+    title: 'Smoked Salmon',
+    description: 'Served with remoulade sauce. Fresh, delicate flavors from the Nordic waters.',
+    price: 26.00,
+    in_stock: true,
+    category_id: 'seafood'
+  }
+]
+
+// Lunch buffet info
+const lunchInfo = {
+  price: 13.00,
+  time: 'Mon-Fri 10:00 - 15:00',
+  includes: ['Rich salad bar', 'Starters', 'Drinks', 'Bread', 'Main course', 'Coffee & dessert']
+}
+
+// Testimonials
+const testimonials = [
+  {
+    text: "Outstanding as a steakhouse. The meat is tender and flavorful. Multiple side options and a massive salad bar are included in the meal price.",
+    rating: 5
+  },
+  {
+    text: "The salad selection in the lunch buffet is excellent, and the portion sizes are surprisingly large. You definitely won't leave hungry.",
+    rating: 5
+  },
+  {
+    text: "Delicious food and a calm atmosphere even during the busy lunch hours. Highly recommended for meat lovers.",
+    rating: 5
+  }
+]
+
+// Opening hours
+const openingHours = [
+  { day: 'Monday - Thursday', hours: '10:00 - 20:00', note: 'Kitchen closes at 19:00' },
+  { day: 'Friday', hours: '10:00 - 20:00', note: 'Extended hours for events' },
+  { day: 'Saturday', hours: '12:00 - 21:00', note: 'Kitchen closes at 20:00' },
+  { day: 'Sunday', hours: 'Closed', note: 'Private events available' }
+]
+---
+
+<Layout title="Ravintola Käskynkkä | Lunch, À La Carte and Catering in Kuopio">
+  <Hero />
+  
+  <!-- Services Section -->
+  <section id="services" class="py-32 px-4 bg-surface">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Our Services</h2>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Lunch, À La Carte and Catering</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Lunch -->
+        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+          <div class="text-5xl mb-6">🍽️</div>
+          <h3 class="font-serif text-2xl text-light mb-4">Lunch Buffet</h3>
+          <p class="text-muted text-sm mb-4">Weekdays 10:00 - 15:00</p>
+          <p class="text-accent font-serif text-3xl mb-4">€{lunchInfo.price.toFixed(2)}</p>
+          <p class="text-muted/80 text-sm">Includes a rich salad bar, starters, drinks, bread, main course, coffee and dessert</p>
+        </div>
+        
+        <!-- A La Carte -->
+        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+          <div class="text-5xl mb-6">🥩</div>
+          <h3 class="font-serif text-2xl text-light mb-4">À La Carte</h3>
+          <p class="text-muted text-sm mb-4">Known for generous steaks</p>
+          <p class="text-accent font-serif text-3xl mb-4">Quality</p>
+          <p class="text-muted/80 text-sm">High-quality meat products and generous portions are our passion</p>
+        </div>
+        
+        <!-- Catering -->
+        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+          <div class="text-5xl mb-6">🎉</div>
+          <h3 class="font-serif text-2xl text-light mb-4">Catering</h3>
+          <p class="text-muted text-sm mb-4">Private Events & Corporate</p>
+          <p class="text-accent font-serif text-3xl mb-4">Full</p>
+          <p class="text-muted/80 text-sm">Customized menus for parties and events - let us make your day successful</p>
+        </div>
+        
+        <!-- Sauna -->
+        <div class="text-center p-8 border border-dark hover:border-accent transition-colors duration-300">
+          <div class="text-5xl mb-6">🧖</div>
+          <h3 class="font-serif text-2xl text-light mb-4">Sauna & Cabinet</h3>
+          <p class="text-muted text-sm mb-4">Private facilities for groups</p>
+          <p class="text-accent font-serif text-3xl mb-4">Book</p>
+          <p class="text-muted/80 text-sm">Sauna and cabinet facilities available for group bookings - perfect for gatherings</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Menu Section -->
+  <section id="menu" class="py-32 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">À La Carte - Our Favorites</h2>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Known for generous steak portions and high-quality meat</p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Menu Items -->
+        <div class="lg:col-span-2">
+          <div class="mb-8">
+            <p class="text-muted text-center mb-8">
+              Choose your favorites and order directly online. 
+              Pick up at the restaurant or dine in.
+            </p>
+          </div>
+          <div class="space-y-0">
+            {signatureDishes.map((item) => (
+              <MenuItem item={item} />
+            ))}
+          </div>
+          
+          <div class="mt-12 text-center">
+            <p class="text-muted text-sm italic">
+              * Ask our staff for more options. Availability may vary.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Cart Sidebar -->
+        <aside class="lg:col-span-1">
+          <div class="sticky top-8">
+            <Cart client:load />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Lunch Buffet Info -->
+  <section id="lunch" class="py-32 px-4 bg-surface">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Lunch Buffet</h2>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Weekdays {lunchInfo.time}</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="text-6xl font-serif text-accent mb-6">€{lunchInfo.price.toFixed(2)}</div>
+          <p class="text-light text-lg mb-6">
+            A rich lunch buffet that includes everything you need for a perfect lunch experience.
+          </p>
+          <ul class="space-y-3">
+            {lunchInfo.includes.map((item) => (
+              <li class="flex items-center text-muted">
+                <span class="text-accent mr-3">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="text-center">
+          <div class="bg-dark p-8 inline-block">
+            <p class="text-muted uppercase tracking-wider text-sm mb-2">Opening Hours</p>
+            <p class="text-light text-2xl font-serif">Mon-Fri</p>
+            <p class="text-accent text-4xl font-serif my-4">10:00 - 15:00</p>
+            <p class="text-muted text-sm">Kitchen closes at 14:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-32 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Customer Reviews</h2>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">What our customers say</p>
+        <div class="flex justify-center items-center mt-4">
+          <span class="text-accent text-2xl mr-2">★★★★★</span>
+          <span class="text-light font-serif text-xl">4.5 / 5</span>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {testimonials.map((testimonial, index) => (
+          <div class="bg-surface p-8 border border-dark">
+            <div class="text-accent text-xl mb-4">
+              {'★'.repeat(testimonial.rating)}
+            </div>
+            <p class="text-light/80 italic mb-6 leading-relaxed">
+              "{testimonial.text}"
+            </p>
+            <div class="text-muted text-sm uppercase tracking-wider">
+              Customer {index + 1}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- About Section -->
+  <section id="about" class="py-32 px-4 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="font-serif text-4xl md:text-5xl text-accent mb-8">Our Story</h2>
+      <p class="text-light/80 font-sans text-lg leading-relaxed mb-8">
+        Käskynkkä – at once modern and traditional, relaxed and stylish. 
+        A restaurant and social venue known for its delicious food in the Jynkkä district of Kuopio.
+      </p>
+      <p class="text-light/80 font-sans text-lg leading-relaxed mb-8">
+        Good food is built on experience and high-quality ingredients. 
+        You can enjoy delicious food from us both at lunchtime and from our À La Carte menu in generous portions. 
+        Our catering service, on the other hand, ensures a successful celebration or other event.
+      </p>
+      <p class="text-light/80 font-sans text-lg leading-relaxed mb-12">
+        But what would good food be without the right atmosphere? 
+        A cozy feeling is created by our modern facilities and professional, helpful staff.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+        <div class="text-center">
+          <div class="text-4xl font-serif text-accent mb-2">4.5★</div>
+          <div class="text-muted text-sm uppercase tracking-wider">Google Rating</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl font-serif text-accent mb-2">Jynkkä</div>
+          <div class="text-muted text-sm uppercase tracking-wider">Kuopio</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl font-serif text-accent mb-2">Tradition</div>
+          <div class="text-muted text-sm uppercase tracking-wider">& Modern Style</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Opening Hours Section -->
+  <section id="hours" class="py-32 px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-4xl md:text-5xl text-accent mb-4">Opening Hours</h2>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Welcome!</p>
+      </div>
+      
+      <div class="bg-surface p-8 md:p-12">
+        <div class="space-y-6">
+          {openingHours.map((schedule) => (
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center py-4 border-b border-dark last:border-0">
+              <div class="mb-2 md:mb-0">
+                <span class="text-light font-serif text-xl">{schedule.day}</span>
+              </div>
+              <div class="text-right">
+                <span class="text-accent font-sans text-lg block">{schedule.hours}</span>
+                <span class="text-muted text-sm">{schedule.note}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div class="mt-8 pt-8 border-t border-dark text-center">
+          <p class="text-muted text-sm">
+            Company: Ravintola Käskynkkä | Business ID: 0648221-5 | Owner: Veli Markkanen
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Catering CTA Section -->
+  <section id="catering" class="py-32 px-4 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="font-serif text-4xl md:text-5xl text-accent mb-6">Planning a Party?</h2>
+      <p class="text-light/80 font-sans text-lg leading-relaxed mb-8">
+        Our catering service ensures a successful celebration or other event. 
+        Customized menus, professional service and cozy facilities – 
+        let us make your day memorable.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a 
+          href="tel:+358173613411" 
+          class="inline-block px-8 py-4 bg-accent text-dark font-sans font-medium tracking-wider uppercase text-sm hover:bg-accent/90 transition-colors duration-300"
+        >
+          Call: 017 361 3411
+        </a>
+        <a 
+          href="mailto:palaute@kaskynkka.net" 
+          class="inline-block px-8 py-4 border border-accent text-accent font-sans font-medium tracking-wider uppercase text-sm hover:bg-accent hover:text-dark transition-colors duration-300"
+        >
+          Email
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="py-16 px-4 border-t border-surface">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-8 text-center md:text-left">
+        <div class="md:col-span-2">
+          <h3 class="font-serif text-2xl text-accent mb-4">Ravintola Käskynkkä</h3>
+          <p class="text-muted text-sm mb-4">
+            A restaurant and social venue known for its delicious food in Jynkkä, Kuopio. 
+            Lunch, À La Carte and catering services.
+          </p>
+          <p class="text-muted/60 text-xs">
+            Business ID: 0648221-5 | Owner: Veli Markkanen
+          </p>
+        </div>
+        <div>
+          <h4 class="font-sans text-light uppercase tracking-wider text-sm mb-4">Contact</h4>
+          <p class="text-muted text-sm">Soikkokuja 12</p>
+          <p class="text-muted text-sm">70780 Kuopio</p>
+          <p class="text-muted text-sm mt-2">📞 017 361 3411</p>
+          <p class="text-muted text-sm">✉️ palaute@kaskynkka.net</p>
+        </div>
+        <div>
+          <h4 class="font-sans text-light uppercase tracking-wider text-sm mb-4">Opening Hours</h4>
+          <p class="text-muted text-sm">Mon-Thu: 10-20</p>
+          <p class="text-muted text-sm">Fri: 10-20</p>
+          <p class="text-muted text-sm">Sat: 12-21</p>
+          <p class="text-muted text-sm">Sun: Closed</p>
+        </div>
+        <div>
+          <h4 class="font-sans text-light uppercase tracking-wider text-sm mb-4">Follow Us</h4>
+          <a 
+            href="https://www.facebook.com/ravintolakaskynkka" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="text-muted hover:text-accent transition-colors duration-300 flex items-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+            </svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+      <div class="mt-12 pt-8 border-t border-surface text-center">
+        <p class="text-muted/60 text-sm">
+          © 2026 Ravintola Käskynkkä. All rights reserved. | 
+          <a href="https://kaskynkka.net" class="hover:text-accent transition-colors">kaskynkka.net</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  // Handle checkout event from cart
+  window.addEventListener('checkout', (e: Event) => {
+    const customEvent = e as CustomEvent
+    const items = customEvent.detail
+    if (items.length === 0) return
+    
+    // Store cart items in sessionStorage for checkout page
+    sessionStorage.setItem('cartItems', JSON.stringify(items))
+    
+    // Redirect to checkout
+    window.location.href = '/checkout'
+  })
+</script>

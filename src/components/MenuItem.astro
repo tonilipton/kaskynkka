@@ -1,0 +1,83 @@
+---
+import { addToCart } from '../stores/cart.js'
+import type { MenuItem } from '../lib/types.js'
+
+interface Props {
+  item: MenuItem
+}
+
+const { item } = Astro.props
+---
+
+<div class={`menu-item group ${!item.in_stock ? 'opacity-50' : ''}`} data-item-id={item.id}>
+  <!-- Top Row: Title (left) and Price (right) -->
+  <div class="flex justify-between items-baseline border-b border-accent/20 pb-2 mb-2">
+    <h3 class="font-serif text-xl text-accent flex-1 pr-4">{item.title}</h3>
+    <span class="font-sans font-medium text-lg text-light whitespace-nowrap">{item.price.toFixed(2)}€</span>
+  </div>
+  
+  <!-- Description -->
+  {item.description && (
+    <p class="font-sans text-muted text-sm leading-relaxed mb-3">{item.description}</p>
+  )}
+  
+  <!-- Bottom Row: Empty space (left) and Button (right, aligned with price) -->
+  <div class="flex justify-end items-center">
+    {!item.in_stock ? (
+      <span class="text-xs uppercase tracking-widest text-red-400 border border-red-400/50 px-3 py-1.5">Loppuunmyyty</span>
+    ) : (
+      <button 
+        class="add-to-cart-btn text-xs uppercase tracking-widest text-accent border border-accent px-4 py-2 hover:bg-accent hover:text-dark transition-all duration-300"
+        data-item-id={item.id}
+        data-item-title={item.title}
+        data-item-price={item.price}
+      >
+        Lisää Tilaukseen
+      </button>
+    )}
+  </div>
+</div>
+
+<style>
+  .menu-item {
+    @apply py-4 border-b border-surface/30 last:border-0;
+  }
+  
+  .menu-item:hover {
+    @apply bg-surface/20;
+  }
+</style>
+
+<script>
+  import { addToCart } from '../stores/cart.js'
+  import type { MenuItem } from '../lib/types.js'
+  
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const itemId = btn.getAttribute('data-item-id')
+      const itemTitle = btn.getAttribute('data-item-title')
+      const itemPrice = btn.getAttribute('data-item-price')
+      
+      if (!itemId || !itemTitle || !itemPrice) return
+      
+      const menuItem: MenuItem = {
+        id: itemId,
+        title: itemTitle,
+        category_id: '',
+        price: parseFloat(itemPrice),
+        in_stock: true
+      }
+      
+      addToCart(menuItem)
+      
+      // Visual feedback
+      const originalText = btn.textContent
+      btn.textContent = 'Lisätty!'
+      btn.classList.add('bg-accent', 'text-dark')
+      setTimeout(() => {
+        btn.textContent = originalText
+        btn.classList.remove('bg-accent', 'text-dark')
+      }, 1000)
+    })
+  })
+</script>

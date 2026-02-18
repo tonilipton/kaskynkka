@@ -1,0 +1,231 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { getSupabaseClient } from '../../lib/supabaseClient'
+
+const { id } = Astro.params
+
+let order = null
+let orderItems = []
+let error = null
+
+if (id) {
+  try {
+    const supabase = getSupabaseClient()
+    const { data: orderData, error: orderError } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('order_id', id)
+      .single()
+    
+    if (!orderError && orderData) {
+      order = orderData
+      const { data: items } = await supabase
+        .from('order_items')
+        .select('*, menu_items(*)')
+        .eq('order_id', order.id)
+      orderItems = items || []
+    } else {
+      const { data: sessionOrder } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('stripe_session_id', id)
+        .single()
+      
+      if (sessionOrder) {
+        order = sessionOrder
+        const { data: items } = await supabase
+          .from('order_items')
+          .select('*, menu_items(*)')
+          .eq('order_id', order.id)
+        orderItems = items || []
+      } else {
+        error = 'Order not found'
+      }
+    }
+  } catch (e: any) {
+    error = e.message || 'Failed to load order'
+  }
+} else {
+  error = 'Order ID is required'
+}
+
+const title = order ? 'Order ' + order.order_id + ' - Ravintola Kaskynkka' : 'Order Not Found'
+---
+
+<Layout title={title}>
+  <div class="min-h-screen py-32 px-4 bg-dark">
+    <div class="max-w-2xl mx-auto">
+      {error ? (
+        <div class="bg-surface p-8 text-center border border-dark">
+          <h1 class="font-serif text-3xl text-accent mb-4">Order Not Found</h1>
+          <p class="text-muted mb-6">{error}</p>
+          <a href="/" class="inline-block px-6 py-3 bg-accent text-dark font-sans uppercase tracking-wider text-sm hover:bg-accent/90 transition-colors">
+            Back to Menu
+          </a>
+        </div>
+      ) : order ? (
+        <div class="space-y-8">
+          <div class="text-center">
+            <h1 class="font-serif text-4xl text-accent mb-2">Order Tracking</h1>
+            <p class="text-muted font-sans tracking-wider uppercase text-sm">Order #{order.order_id}</p>
+          </div>
+          
+          <div id="status-card" class="bg-surface p-8 border border-dark" data-order-id={order.order_id} data-initial-status={order.status} data-initial-time={order.estimated_time || ''}>
+            <div id="status-content" class="text-center">
+              <div id="status-icon" class="text-6xl mb-4">⏳</div>
+              <h2 id="status-title" class="font-serif text-2xl text-light mb-2">Loading...</h2>
+              <p id="status-message" class="text-muted">Checking order status...</p>
+              
+              <div id="pickup-info" class="mt-6 pt-6 border-t border-dark hidden">
+                <div class="flex items-center justify-center gap-2 text-accent mb-2">
+                  <span class="text-2xl">📍</span>
+                  <span class="font-sans uppercase tracking-wider text-sm">Pickup Location</span>
+                </div>
+                <p class="text-light">Soikkokuja 12, 70780 Kuopio</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-surface p-8 border border-dark">
+            <h3 class="font-serif text-xl text-accent mb-6 pb-4 border-b border-dark">Order Details</h3>
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                <span class="text-muted">Customer</span>
+                <span class="text-light font-medium">{order.customer_name || 'Guest'}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted">Total</span>
+                <span class="text-accent font-serif text-xl">€{order.total.toFixed(2)}</span>
+              </div>
+              <div id="estimated-time-row" class="flex justify-between hidden">
+                <span class="text-muted">Estimated Pickup</span>
+                <span id="estimated-time-value" class="text-light font-medium">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-surface p-8 border border-dark">
+            <h3 class="font-serif text-xl text-accent mb-6 pb-4 border-b border-dark">Items</h3>
+            {orderItems.length > 0 ? (
+              <div class="space-y-4">
+                {orderItems.map((item) => (
+                  <div class="flex justify-between items-center py-2 border-b border-dark/50 last:border-0">
+                    <div>
+                      <span class="text-light font-medium">{item.menu_items?.title || 'Unknown Item'}</span>
+                      <span class="text-muted text-sm ml-2">× {item.quantity}</span>
+                    </div>
+                    <span class="text-accent">€{(item.price * item.quantity).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="text-muted italic">No items found</p>
+            )}
+          </div>
+          
+          <div class="bg-surface/50 border border-accent/30 p-6">
+            <div class="flex items-start gap-4">
+              <span class="text-2xl">📍</span>
+              <div>
+                <h4 class="font-serif text-lg text-accent mb-1">Pickup Only</h4>
+                <p class="text-light/80 text-sm">
+                  Please pick up your order from our restaurant location.<br>
+                  <strong>Address:</strong> Soikkokuja 12, 70780 Kuopio
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center">
+            <a href="/" class="inline-block px-6 py-3 border border-accent text-accent font-sans uppercase tracking-wider text-sm hover:bg-accent hover:text-dark transition-colors">
+              Back to Menu
+            </a>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const statusCard = document.getElementById('status-card')
+  if (!statusCard) return
+  
+  const orderId = statusCard.dataset.orderId
+  const initialStatus = statusCard.dataset.initialStatus
+  const initialTime = statusCard.dataset.initialTime
+  
+  const statusIcon = document.getElementById('status-icon')
+  const statusTitle = document.getElementById('status-title')
+  const statusMessage = document.getElementById('status-message')
+  const pickupInfo = document.getElementById('pickup-info')
+  const estimatedTimeRow = document.getElementById('estimated-time-row')
+  const estimatedTimeValue = document.getElementById('estimated-time-value')
+  
+  function updateStatusUI(status: string, estimatedTime: number | null) {
+    if (!statusIcon || !statusTitle || !statusMessage) return
+    
+    switch (status) {
+      case 'Pending':
+        statusIcon.textContent = '⏳'
+        statusTitle.textContent = 'Waiting for Confirmation'
+        statusMessage.textContent = 'Your order is waiting for the restaurant to confirm. You will receive an update soon!'
+        pickupInfo?.classList.add('hidden')
+        estimatedTimeRow?.classList.add('hidden')
+        break
+      case 'Confirmed':
+        statusIcon.textContent = '✅'
+        statusTitle.textContent = 'Order Confirmed'
+        pickupInfo?.classList.remove('hidden')
+        if (estimatedTime && estimatedTime > 0) {
+          statusMessage.textContent = 'Great news! Your order is being prepared and will be ready for pickup in approximately ' + estimatedTime + ' minutes.'
+          estimatedTimeRow?.classList.remove('hidden')
+          if (estimatedTimeValue) estimatedTimeValue.textContent = estimatedTime + ' minutes'
+        } else {
+          statusMessage.textContent = 'Your order has been confirmed and is being prepared. We will update you with the pickup time shortly!'
+        }
+        break
+      case 'Ready':
+        statusIcon.textContent = '🎉'
+        statusTitle.textContent = 'Ready for Pickup!'
+        statusMessage.textContent = 'Your order is ready! Please come to the restaurant to pick it up. We are looking forward to seeing you!'
+        pickupInfo?.classList.remove('hidden')
+        estimatedTimeRow?.classList.add('hidden')
+        statusCard?.classList.add('border-accent')
+        break
+      default:
+        statusIcon.textContent = '⏳'
+        statusTitle.textContent = 'Processing'
+        statusMessage.textContent = 'Your order is being processed. Please wait for updates!'
+        pickupInfo?.classList.add('hidden')
+        estimatedTimeRow?.classList.add('hidden')
+    }
+  }
+  
+  async function checkStatus() {
+    if (!orderId) return
+    try {
+      const response = await fetch('/api/order-status?orderId=' + encodeURIComponent(orderId))
+      if (!response.ok) throw new Error('Failed to fetch status')
+      
+      const data = await response.json()
+      if (data.success) {
+        updateStatusUI(data.status, data.estimated_time)
+        
+        if (data.status === 'Ready') {
+          clearInterval(pollInterval)
+        }
+      }
+    } catch (err) {
+      console.error('Error checking order status:', err)
+    }
+  }
+  
+  updateStatusUI(initialStatus || 'Pending', initialTime ? parseInt(initialTime) : null)
+  
+  const pollInterval = setInterval(checkStatus, 10000)
+  
+  window.addEventListener('beforeunload', () => {
+    clearInterval(pollInterval)
+  })
+</script>

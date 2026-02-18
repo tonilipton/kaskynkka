@@ -1,0 +1,12 @@
+# husky install hook
+
+npx husky install
+
+# add pre-commit hook
+
+npx husky add .husky/pre-commit "npx lint-staged"
+
+# commitizen config
+
+cz-config-path .czrc
+npx commitizen init cz-conventional-changelog --save-dev --save-exact

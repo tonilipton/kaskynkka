@@ -1,0 +1,39 @@
+---
+// Language Toggle Component
+interface Props {
+  currentLocale: string;
+}
+
+const { currentLocale } = Astro.props;
+
+// Get the current path
+const currentPath = Astro.url.pathname;
+
+// Generate paths for both languages
+const fiPath = currentPath.replace(/^\/en/, '') || '/';
+const enPath = '/en' + currentPath.replace(/^\/en/, '');
+---
+
+<div class="flex items-center gap-2 text-sm">
+  <a 
+    href={fiPath}
+    class={currentLocale === 'fi' 
+      ? 'text-accent font-medium' 
+      : 'text-muted hover:text-accent transition-colors duration-300'
+    }
+    aria-label="Suomi"
+  >
+    FI
+  </a>
+  <span class="text-muted">|</span>
+  <a 
+    href={enPath}
+    class={currentLocale === 'en' 
+      ? 'text-accent font-medium' 
+      : 'text-muted hover:text-accent transition-colors duration-300'
+    }
+    aria-label="English"
+  >
+    EN
+  </a>
+</div>

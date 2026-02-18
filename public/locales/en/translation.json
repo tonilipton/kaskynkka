@@ -1,0 +1,170 @@
+{
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "services": "Services",
+    "about": "Our Story",
+    "hours": "Opening Hours",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "RAVINTOLA KÄSKYNKKÄ",
+    "subtitle": "A restaurant and social venue known for its delicious food",
+    "cta_menu": "View Menu",
+    "cta_story": "Learn More"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Lunch, À La Carte and Catering",
+    "lunch": {
+      "title": "Lunch Buffet",
+      "description": "Rich lunch buffet on weekdays",
+      "price_label": "price",
+      "includes": "Includes a rich salad bar, starters, drinks, bread, main course, coffee and dessert"
+    },
+    "alacarte": {
+      "title": "À La Carte",
+      "description": "Known for generous steak portions",
+      "quality": "Quality",
+      "detail": "High-quality meat products and generous portions are our passion"
+    },
+    "catering": {
+      "title": "Catering",
+      "description": "Private Events & Corporate Functions",
+      "full": "Full",
+      "detail": "Customized menus for parties and events - let us take care of your successful day"
+    },
+    "sauna": {
+      "title": "Sauna & Cabinet",
+      "description": "Private facilities for groups",
+      "book": "Book",
+      "detail": "Sauna facilities and cabinets available for group bookings - perfect for evening gatherings"
+    }
+  },
+  "menu": {
+    "title": "À La Carte - Our Favorites",
+    "subtitle": "Known for generous steak portions and high-quality meat",
+    "description": "Choose your favorite dishes and order directly online. Pick up at the restaurant or dine in.",
+    "availability_note": "Ask our staff for more options. Availability may vary.",
+    "add_to_order": "Add to Order",
+    "added": "Added!",
+    "sold_out": "Sold Out"
+  },
+  "dishes": {
+    "three_pepper_steak": {
+      "title": "Three-Pepper Steak",
+      "description": "Beef tenderloin with a signature pepper sauce. Our most popular dish, renowned for generous portions and exceptional flavor."
+    },
+    "hunters_steak": {
+      "title": "Hunter's Steak",
+      "description": "Served with a rich chanterelle mushroom sauce. A Finnish classic with deep, earthy flavors."
+    },
+    "grilled_liver": {
+      "title": "Grilled Liver",
+      "description": "Served with crispy bacon - a local favorite. Traditional Finnish comfort food at its finest."
+    },
+    "smoked_salmon": {
+      "title": "Smoked Salmon",
+      "description": "Served with remoulade sauce. Fresh, delicate flavors from the Nordic waters."
+    }
+  },
+  "lunch": {
+    "title": "Lunch Buffet",
+    "subtitle": "Weekdays Mon-Fri 10:00 - 15:00",
+    "description": "A rich lunch buffet that includes everything you need for a perfect lunch experience.",
+    "hours_title": "Opening Hours",
+    "days": "Mon-Fri",
+    "kitchen_closes": "Kitchen closes at 14:00",
+    "includes": {
+      "salad_bar": "Rich salad bar",
+      "starters": "Starters",
+      "drinks": "Drinks",
+      "bread": "Bread",
+      "main_course": "Main course",
+      "coffee_dessert": "Coffee & dessert"
+    }
+  },
+  "cart": {
+    "title": "Your Order",
+    "empty": "Your cart is empty",
+    "items_count": "item",
+    "items_count_plural": "items",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "clear": "Clear Cart",
+    "quantity": "Quantity"
+  },
+  "testimonials": {
+    "title": "Customer Reviews",
+    "subtitle": "What our customers say",
+    "rating": "4.5 / 5",
+    "reviews": [
+      {
+        "text": "Outstanding as a steakhouse. The meat is tender and flavorful. Multiple side options and a massive salad bar are included in the meal price.",
+        "author": "Customer 1"
+      },
+      {
+        "text": "The salad selection in the lunch buffet is excellent, and the portion sizes are surprisingly large. You definitely won't leave hungry.",
+        "author": "Customer 2"
+      },
+      {
+        "text": "Delicious food and a calm atmosphere even during the busy lunch hours. Highly recommended for meat lovers.",
+        "author": "Customer 3"
+      }
+    ]
+  },
+  "about": {
+    "title": "Our Story",
+    "p1": "Käskynkkä – at once modern and traditional, relaxed and stylish. A restaurant and social venue known for its delicious food in the Jynkkä district of Kuopio.",
+    "p2": "Good food is built on experience and high-quality ingredients. You can enjoy delicious food from us both at lunchtime and from our À La Carte menu in generous portions. Our catering service, on the other hand, ensures a successful celebration or other event.",
+    "p3": "But what would good food be without the right atmosphere? A cozy feeling is created by our modern facilities and professional, helpful staff.",
+    "stats": {
+      "rating": "Google Rating",
+      "location": "Kuopio",
+      "style": "Tradition & Modern Style"
+    }
+  },
+  "hours": {
+    "title": "Opening Hours",
+    "subtitle": "Welcome!",
+    "mon_thu": "Monday - Thursday",
+    "fri": "Friday",
+    "sat": "Saturday",
+    "sun": "Sunday",
+    "kitchen_note": "Kitchen closes at",
+    "events_note": "Extended for events",
+    "private_events": "Private events available"
+  },
+  "catering": {
+    "title": "Planning a Party?",
+    "description": "Our catering service ensures a successful celebration or other event. Customized menus, professional service and cozy facilities – let us make your day memorable.",
+    "call": "Call: 017 361 3411",
+    "email": "Email"
+  },
+  "footer": {
+    "description": "A restaurant and social venue known for its delicious food in Jynkkä, Kuopio. Lunch, À La Carte and catering services.",
+    "business_id": "Business ID",
+    "owner": "Owner",
+    "contact": "Contact",
+    "address": "Soikkokuja 12, 70780 Kuopio",
+    "phone": "017 361 3411",
+    "email": "palaute@kaskynkka.net",
+    "hours": "Opening Hours",
+    "follow_us": "Follow Us",
+    "facebook": "Facebook",
+    "copyright": "All rights reserved"
+  },
+  "checkout": {
+    "title": "Complete Your Order",
+    "subtitle": "Secure payment via Stripe",
+    "order_summary": "Order Summary",
+    "customer_info": "Customer Information",
+    "name_label": "Your Name (Optional)",
+    "name_placeholder": "Enter your name",
+    "proceed": "Proceed to Payment",
+    "processing": "Processing...",
+    "back_to_menu": "Back to Menu",
+    "error": "An error occurred. Please try again.",
+    "canceled": "Payment canceled. You can try again."
+  }
+}
