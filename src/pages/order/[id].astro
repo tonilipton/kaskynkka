@@ -149,8 +149,9 @@ const title = order ? 'Order ' + order.order_id + ' - Ravintola Kaskynkka' : 'Or
 
 <script>
   const statusCard = document.getElementById('status-card')
-  if (!statusCard) return
-  
+  if (!statusCard) {
+    console.error('Status card not found')
+  } else {
   const orderId = statusCard.dataset.orderId
   const initialStatus = statusCard.dataset.initialStatus
   const initialTime = statusCard.dataset.initialTime
@@ -228,4 +229,5 @@ const title = order ? 'Order ' + order.order_id + ' - Ravintola Kaskynkka' : 'Or
   window.addEventListener('beforeunload', () => {
     clearInterval(pollInterval)
   })
+  }
 </script>
