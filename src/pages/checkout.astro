@@ -7,25 +7,25 @@ import Layout from '../layouts/Layout.astro'
     <div class="max-w-2xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-16">
-        <h1 class="font-serif text-4xl md:text-5xl text-accent mb-4">Complete Your Order</h1>
-        <p class="text-muted font-sans tracking-wider uppercase text-sm">Secure checkout powered by Stripe</p>
+        <h1 class="font-serif text-4xl md:text-5xl text-accent mb-4">Viimeistele Tilaus</h1>
+        <p class="text-muted font-sans tracking-wider uppercase text-sm">Turvallinen maksu Stripen kautta</p>
       </div>
       
       <!-- Order Summary -->
       <div id="order-summary" class="bg-surface p-8 mb-8">
-        <h2 class="font-serif text-2xl text-accent mb-6 pb-4 border-b border-dark">Order Summary</h2>
+        <h2 class="font-serif text-2xl text-accent mb-6 pb-4 border-b border-dark">Tilauksen Yhteenveto</h2>
         <div id="summary-items" class="space-y-4 mb-6">
           <!-- Items will be populated by JavaScript -->
         </div>
         <div class="flex justify-between items-center pt-6 border-t border-dark">
-          <span class="text-muted uppercase tracking-wider text-sm">Total</span>
+          <span class="text-muted uppercase tracking-wider text-sm">Yhteensä</span>
           <span id="summary-total" class="font-serif text-3xl text-accent">€0.00</span>
         </div>
       </div>
       
       <!-- Customer Information -->
       <div class="bg-surface p-8 mb-8">
-        <h2 class="font-serif text-2xl text-accent mb-6">Customer Information</h2>
+        <h2 class="font-serif text-2xl text-accent mb-6">Asiakastiedot</h2>
         <form id="checkout-form" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -47,14 +47,14 @@ import Layout from '../layouts/Layout.astro'
         <div class="flex items-start gap-4">
           <div class="text-2xl">📍</div>
           <div>
-            <h3 class="font-serif text-xl text-accent mb-2">Pickup Only</h3>
+            <h3 class="font-serif text-xl text-accent mb-2">Vain Nouto</h3>
             <p class="text-light/80 text-sm mb-2">
-              Orders are for pickup only from our restaurant location.
+              Tilaukset ovat vain noutoa varten ravintolastamme.
             </p>
             <p class="text-muted text-sm">
-              <strong>Address:</strong> Soikkokuja 12, 70780 Kuopio<br>
-              <strong>Preparation time:</strong> Typically 20-30 minutes<br>
-              You'll receive a notification when your order is ready!
+              <strong>Osoite:</strong> Soikkokuja 12, 70780 Kuopio<br>
+              <strong>Valmistusaika:</strong> Yleensä 20-30 minuuttia<br>
+              Saat ilmoituksen kun tilauksesi on valmis!
             </p>
           </div>
         </div>
@@ -71,7 +71,7 @@ import Layout from '../layouts/Layout.astro'
       <!-- Back to Menu -->
       <div class="text-center">
         <a href="/" class="text-muted hover:text-accent transition-colors uppercase tracking-wider text-sm">
-          ← Back to Menu
+          ← Takaisin Menuun
         </a>
       </div>
     </div>
@@ -117,7 +117,7 @@ import Layout from '../layouts/Layout.astro'
     if (!summaryItemsEl || !summaryTotalEl) return
     
     if (cartItems.length === 0) {
-      summaryItemsEl.innerHTML = '<p class="text-muted italic">Your cart is empty</p>'
+      summaryItemsEl.innerHTML = '<p class="text-muted italic">Ostoskorisi on tyhjä</p>'
       summaryTotalEl.textContent = '€0.00'
       return
     }
@@ -126,10 +126,18 @@ import Layout from '../layouts/Layout.astro'
     summaryItemsEl.innerHTML = cartItems.map((item: any) => {
       const itemTotal = item.menuItem.price * item.quantity
       total += itemTotal
+      // Normalize title - handle both string and object formats
+      let titleStr = ''
+      const t = item.menuItem.title
+      if (typeof t === 'string') {
+        titleStr = t
+      } else if (t && typeof t === 'object') {
+        titleStr = t.fi || t.en || ''
+      }
       return `
         <div class="flex justify-between items-center py-2">
           <div>
-            <span class="text-light font-serif">${item.menuItem.title}</span>
+            <span class="text-light font-serif">${titleStr}</span>
             <span class="text-muted text-sm ml-2">× ${item.quantity}</span>
           </div>
           <span class="text-accent">€${itemTotal.toFixed(2)}</span>
@@ -151,7 +159,7 @@ import Layout from '../layouts/Layout.astro'
     if (!errorDiv || !button) return
     
     button.disabled = true
-    button.textContent = 'Processing...'
+    button.textContent = 'Käsitellään...'
     errorDiv.classList.add('hidden')
     
     try {
@@ -164,22 +172,29 @@ import Layout from '../layouts/Layout.astro'
         }),
       })
       
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type') || ''
+      if (!contentType.includes('application/json')) {
+        throw new Error('Palvelin palautti virheellisen vastauksen. Yritä uudelleen.')
+      }
+      
       const data = await response.json()
       
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session')
+        throw new Error(data.error || 'Tilauksen luominen epäonnistui')
       }
       
       if (data.url) {
         window.location.href = data.url
       } else {
-        throw new Error('No checkout URL received')
+        throw new Error('Maksu-URL:aa ei saatu')
       }
-    } catch (error: any) {
-      errorDiv.textContent = error.message || 'An error occurred. Please try again.'
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Tuntematon virhe. Yritä uudelleen.'
+      errorDiv.textContent = message
       errorDiv.classList.remove('hidden')
       button.disabled = false
-      button.textContent = 'Proceed to Payment'
+      button.textContent = 'Siirry maksamaan'
     }
   })
   
@@ -188,32 +203,8 @@ import Layout from '../layouts/Layout.astro'
   if (urlParams.get('canceled') === 'true') {
     const errorDiv = document.getElementById('checkout-error')
     if (errorDiv) {
-      errorDiv.textContent = 'Checkout was canceled. You can try again.'
+      errorDiv.textContent = 'Maksu peruutettiin. Voit yrittää uudelleen.'
       errorDiv.classList.remove('hidden')
     }
   }
-  // Hook up checkout button to API and validate JSON response
-  document.getElementById('proceed-checkout')?.addEventListener('click', async (e) => {
-    e.preventDefault()
-    try {
-      const resp = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
-      })
-      if (!resp.ok) throw new Error('Checkout request failed')
-      const contentType = resp.headers.get('content-type') || ''
-      if (!contentType.includes('application/json')) throw new Error('Invalid checkout response')
-      const data = await resp.json()
-      if (data?.url) window.location.href = data.url
-      else throw new Error('Checkout URL not provided')
-    } catch (err) {
-      const errMsg = err?.message || 'Checkout error'
-      const el = document.getElementById('checkout-error')
-      if (el) {
-        el.textContent = errMsg
-        el.classList.remove('hidden')
-      }
-    }
-  })
 </script>
