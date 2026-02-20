@@ -8,7 +8,6 @@ interface Props {
 
 const { 
   title = 'RAVINTOLA KÄSKYNKKÄ',
-  subtitle = 'Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola',
   backgroundImage = '/images/IMG_3046-1024x682.jpg',
   locale = 'fi'
 } = Astro.props;
@@ -17,14 +16,19 @@ const content = {
   fi: {
     scroll: 'Vieritä',
     menu: 'Näytä Menu',
-    story: 'Meidän Tarinamme'
+    story: 'Meidän Tarinamme',
+    subtitle: 'Maukkaasta ruoasta tunnettu ruoka- ja seurusteluravintola'
   },
   en: {
     scroll: 'Scroll',
     menu: 'View Menu',
-    story: 'Our Story'
+    story: 'Our Story',
+    subtitle: 'A dining and social restaurant known for its tasty food.'
   }
 }[locale]
+
+const { subtitle } = Astro.props;
+const displaySubtitle = subtitle || content.subtitle;
 ---
 
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -45,7 +49,7 @@ const content = {
       {title}
     </h1>
     <p class="font-sans text-lg md:text-xl text-muted tracking-widest uppercase">
-      {subtitle}
+      {displaySubtitle}
     </p>
   </div>
 </section>
