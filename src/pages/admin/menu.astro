@@ -1,130 +1,101 @@
 ---
 import { getSupabaseClient } from '../../lib/supabaseClient'
 
-let menuItems: any[] = []
+// Minimal admin gate (should be replaced with real auth in prod)
+const _cookie = (Astro.request?.headers?.get?.('cookie')) ?? ''
+const _isAdmin = /admin_token=s3cr3t/.test(_cookie)
+
+/** Menu item type */
+type MenuItem = {
+  id?: string
+  title: string
+  description?: string
+  price: number
+  category?: string
+  image?: string
+  sold_out?: boolean
+}
+
+let menuItems: MenuItem[] = []
 let categories: string[] = []
 let error: string | null = null
 let successMessage: string | null = null
 
-// Get action from URL
-const action = Astro.url.searchParams.get('action')
+const action = (Astro.url.searchParams.get('action')) as string
 const editId = Astro.url.searchParams.get('edit')
 
-// Handle form submissions
+// LOAD DATA (GET) AND PROCESS POST in a unified flow
 if (Astro.request.method === 'POST') {
-  try {
-    const formData = await Astro.request.formData();
-    const supabase = getSupabaseClient();
-
-    const formAction = formData.get('action');
-
-    if (formAction === 'create' || formAction === 'update') {
-      const itemData = {
-        title: formData.get('title'),
-        description: formData.get('description'),
-        price: parseFloat(formData.get('price')),
-        category: formData.get('category'),
-        sold_out: formData.get('sold_out') === 'on'
-      };
-
-      const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://kaskynkka.net';
-      const imageFile = formData.get('imageFile');
-      if (imageFile && imageFile instanceof File) {
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('menu-images')
-          .upload(`menu/${imageFile.name}`, imageFile, { upsert: true });
-        if (uploadError) throw uploadError;
-        itemData.image = `${siteUrl}${uploadData.path}`;
-      } else if (formData.get('image')) {
-        itemData.image = formData.get('image');
-      }
-
-      if (formAction === 'create') {
-        const { error: insertError } = await supabase
-          .from('menu_items')
-          .insert([itemData]);
-        if (insertError) throw insertError;
-        successMessage = 'Menu item created successfully!';
-      } else {
-        const id = formData.get('id');
-        const { error: updateError } = await supabase
-          .from('menu_items')
-          .update(itemData)
-          .eq('id', id);
-        if (updateError) throw updateError;
-        successMessage = 'Menu item updated successfully!';
-      }
-    } else if (formAction === 'delete') {
-      const id = formData.get('id');
-      const { error: deleteError } = await supabase
-        .from('menu_items')
-        .delete()
-        .eq('id', id);
-      if (deleteError) throw deleteError;
-      successMessage = 'Menu item deleted successfully!';
-    }
-  } catch (e) {
-    error = e.message || 'Failed to process request';
-  }
-}
-
-      if (formAction === 'create') {
-        const { error: insertError } = await supabase
-          .from('menu_items')
-          .insert([itemData]);
-        if (insertError) throw insertError;
-        successMessage = 'Menu item created successfully!';
-      } else {
-        const id = formData.get('id') as string;
-        const { error: updateError } = await supabase
-          .from('menu_items')
-          .update(itemData)
-          .eq('id', id);
-        if (updateError) throw updateError;
-        successMessage = 'Menu item updated successfully!';
-      }
-    } else if (formAction === 'delete') {
-      const id = formData.get('id') as string;
-      const { error: deleteError } = await supabase
-        .from('menu_items')
-        .delete()
-        .eq('id', id);
-      if (deleteError) throw deleteError;
-      successMessage = 'Menu item deleted successfully!';
-    }
-  } catch (e: any) {
-    error = e.message || 'Failed to process request';
-  }
-}
-
-
-// Fetch menu items and categories
-try {
-  const supabase = getSupabaseClient()
-  const { data: items, error: fetchError } = await supabase
-    .from('menu_items')
-    .select('*')
-    .order('category', { ascending: true })
-    .order('title', { ascending: true })
-  
-  if (fetchError) {
-    error = fetchError.message
+  if (!_isAdmin) {
+    error = 'Access denied. Admin authentication required.'
   } else {
+    try {
+      const formData = await Astro.request.formData()
+      const sb = getSupabaseClient()
+      const formAction = String(formData.get('action') ?? '')
+
+      if (formAction === 'create' || formAction === 'update') {
+        const title = String(formData.get('title') ?? '')
+        const description = String(formData.get('description') ?? '')
+        const price = parseFloat(String(formData.get('price') ?? '0'))
+        const category = String(formData.get('category') ?? '')
+        const sold_out = formData.get('sold_out') === 'on'
+        const item: MenuItem = { title, description, price, category, sold_out }
+
+        const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://kaskynkka.net'
+        // Image data via URL or file upload
+        const imageUrl = formData.get('image') || ''
+        if (imageUrl) item.image = String(imageUrl)
+        const imageFile = formData.get('imageFile')
+        if (imageFile && imageFile instanceof File) {
+          const { data, error: upError } = await sb.storage
+            .from('menu-images')
+            .upload(`menu/${imageFile.name}`, imageFile, { upsert: true })
+          if (upError) throw upError
+          item.image = siteUrl + data.path
+        }
+
+        if (formAction === 'create') {
+          const { error: insertError } = await sb.from('menu_items').insert([item])
+          if (insertError) throw insertError
+          successMessage = 'Menu item created successfully!'
+        } else {
+          const id = formData.get('id') as string
+          const { error: updateError } = await sb.from('menu_items').update(item).eq('id', id)
+          if (updateError) throw updateError
+          successMessage = 'Menu item updated successfully!'
+        }
+      } else if (formAction === 'delete') {
+        const id = formData.get('id') as string
+        const { error: deleteError } = await sb.from('menu_items').delete().eq('id', id)
+        if (deleteError) throw deleteError
+        successMessage = 'Menu item deleted successfully!'
+      }
+    } catch (e: any) {
+      error = e?.message ?? 'Failed to process request'
+    }
+  }
+}
+
+// LOAD DATA (GET)
+try {
+  const sb = getSupabaseClient()
+  const { data: items, error: fetchError } = await sb.from('menu_items').select('*').order('category', { ascending: true }).order('title', { ascending: true })
+  if (fetchError) error = fetchError.message
+  else {
     menuItems = items || []
-    // Extract unique categories
-    categories = [...new Set(menuItems.map(item => item.category).filter(Boolean))]
+    const catList = menuItems.map(m => m.category).filter((c): c is string => typeof c === 'string' && c.length > 0)
+    categories = Array.from(new Set(catList))
   }
 } catch (e: any) {
-  error = e.message || 'Failed to load menu items'
+  error = e?.message ?? 'Failed to load menu items'
 }
 
-// Get item to edit if editing
-let editItem = null
+let editItem: MenuItem | null = null
 if (editId) {
-  editItem = menuItems.find(item => item.id === editId)
+  editItem = menuItems.find((m) => m.id === editId) || null
 }
 ---
-
 <!DOCTYPE html>
 <html lang="fi" class="bg-dark">
   <head>
@@ -134,235 +105,99 @@ if (editId) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script is:inline>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              dark: '#121212',
-              surface: '#1E1E1E',
-              accent: '#C4A484',
-              light: '#F5F5F5',
-              muted: '#A3A3A3',
-            },
-            fontFamily: {
-              serif: ['"Cormorant Garamond"', 'serif'],
-              sans: ['Inter', 'sans-serif'],
-            }
-          }
-        }
-      }
-    </script>
   </head>
   <body class="bg-dark text-light font-sans min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <!-- Header -->
-      <header class="flex justify-between items-center mb-8 pb-6 border-b border-dark">
-        <div>
-          <h1 class="font-serif text-3xl text-accent uppercase tracking-ultra">Menu Management</h1>
-          <p class="text-muted mt-1">Add, edit, or remove menu items</p>
-        </div>
-        <div class="flex gap-4">
-          <a 
-            href="/admin/orders" 
-            class="px-4 py-2 border border-accent text-accent hover:bg-accent hover:text-dark transition-colors font-sans uppercase tracking-wider text-sm"
-          >
-            Order Management
-          </a>
-          <a 
-            href="/" 
-            class="px-4 py-2 bg-accent text-dark hover:bg-accent/90 transition-colors font-sans uppercase tracking-wider text-sm"
-          >
-            Back to Site
-          </a>
-        </div>
+    <div class="p-6 max-w-5xl mx-auto">
+      <header class="flex justify-between items-center mb-6 border-b border-dark pb-4">
+        <h1 class="font-serif text-3xl text-accent uppercase tracking-wider">Menu Management</h1>
+        <nav>
+          <a href="/admin/orders" class="px-3 py-2 border border-accent text-accent hover:bg-accent hover:text-dark transition-colors">Orders</a>
+          <a href="/" class="ml-2 px-3 py-2 bg-accent text-dark hover:bg-accent/90 transition-colors">Site</a>
+        </nav>
       </header>
-      
-      <!-- Messages -->
+
       {error && (
-        <div class="bg-red-900/30 border border-red-500/50 text-red-200 p-4 mb-6">
-          <p>{error}</p>
-        </div>
+        <div class="bg-red-900/30 border border-red-500/50 text-red-200 p-4 mb-6">{error}</div>
       )}
-      
       {successMessage && (
-        <div class="bg-green-900/30 border border-green-500/50 text-green-200 p-4 mb-6">
-          <p>{successMessage}</p>
-        </div>
+        <div class="bg-green-900/30 border border-green-500/50 text-green-200 p-4 mb-6">{successMessage}</div>
       )}
-      
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Form Section -->
-        <div class="lg:col-span-1">
-          <div class="bg-surface border border-dark p-6 sticky top-8">
-            <h2 class="font-serif text-xl text-accent mb-6">
-              {editItem ? 'Edit Item' : 'Add New Item'}
-            </h2>
-            
-            <form method="POST" class="space-y-4">
-              <input type="hidden" name="action" value={editItem ? 'update' : 'create'} />
-              {editItem && <input type="hidden" name="id" value={editItem.id} />}
-              
-              <div>
-                <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Title</label>
-                <input 
-                  type="text" 
-                  name="title" 
-                  value={editItem?.title || ''}
-                  required
-                  class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
-                />
-              </div>
-              
-              <div>
-                <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Description</label>
-                <textarea 
-                  name="description" 
-                  rows="3"
-                  class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
-                >{editItem?.description || ''}</textarea>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Price (€)</label>
-                  <input 
-                    type="number" 
-                    name="price" 
-                    step="0.01"
-                    min="0"
-                    value={editItem?.price || ''}
-                    required
-                    class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
-                  />
-                </div>
-                
-                <div>
-                  <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Category</label>
-                  <input 
-                    type="text" 
-                    name="category" 
-                    list="categories"
-                    value={editItem?.category || ''}
-                    required
-                    class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
-                  />
-                  <datalist id="categories">
-                    {categories.map(cat => (
-                      <option value={cat} />
-                    ))}
-                  </datalist>
-                </div>
-              </div>
-              
-              <div>
-<label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Image file</label>
-<input 
-  type="file" 
-  name="imageFile" 
-  accept="image/*"
-  class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
-/>
-<p class="text-muted/60 text-xs mt-1">Image will be uploaded to Supabase Storage.</p>
-              </div>
-              
-              <div class="flex items-center gap-3 pt-2">
-                <input 
-                  type="checkbox" 
-                  id="sold_out"
-                  name="sold_out"
-                  checked={editItem?.sold_out || false}
-                  class="w-5 h-5 accent-accent bg-dark border-dark rounded"
-                />
-                <label for="sold_out" class="text-muted font-sans uppercase tracking-wider text-xs">Mark as Sold Out</label>
-              </div>
-              
-              <div class="flex gap-3 pt-4">
-                <button 
-                  type="submit"
-                  class="flex-1 px-4 py-3 bg-accent text-dark hover:bg-accent/90 transition-colors font-sans uppercase tracking-wider text-sm"
-                >
-                  {editItem ? 'Update Item' : 'Add Item'}
-                </button>
-                
-                {editItem && (
-                  <a 
-                    href="/admin/menu"
-                    class="px-4 py-3 border border-muted text-muted hover:border-light hover:text-light transition-colors font-sans uppercase tracking-wider text-sm"
-                  >
-                    Cancel
-                  </a>
-                )}
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <!-- Menu Items List -->
-        <div class="lg:col-span-2">
-          {menuItems.length === 0 ? (
-            <div class="text-center py-16 bg-surface border border-dark">
-              <p class="text-muted text-lg">No menu items yet</p>
-              <p class="text-muted/60 text-sm mt-2">Use the form to add your first item</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section class="bg-surface border border-dark p-6 rounded">
+          <h2 class="font-serif text-xl text-accent mb-4">{editItem ? 'Edit Item' : 'Add New Item'}</h2>
+          <form method="POST" class="space-y-4">
+            <input type="hidden" name="action" value={editItem ? 'update' : 'create'} />
+            {editItem && <input type="hidden" name="id" value={editItem.id} />}
+            <div>
+              <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Title</label>
+              <input type="text" name="title" value={editItem?.title || ''} required class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors" />
             </div>
+            <div>
+              <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Description</label>
+              <textarea name="description" rows="3" class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors">{editItem?.description || ''}</textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Price (€)</label>
+                <input type="number" name="price" step="0.01" min="0" value={editItem?.price || ''} required class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors" />
+              </div>
+              <div>
+                <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Category</label>
+                <input type="text" name="category" list="categories" value={editItem?.category || ''} required class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors" />
+                <datalist id="categories">{categories.map((c) => (<option value={c} />))}</datalist>
+              </div>
+            </div>
+            <div>
+              <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Image URL</label>
+              <input type="text" name="image" value={editItem?.image || ''} placeholder="https://..." class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors" />
+              <p class="text-muted/60 text-xs mt-1">Optional: provide image URL if not uploading.</p>
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <input type="checkbox" id="sold_out" name="sold_out" checked={editItem?.sold_out || false} class="w-5 h-5 accent-accent bg-dark border-dark rounded" />
+              <label for="sold_out" class="text-muted font-sans uppercase tracking-wider text-xs">Sold Out</label>
+            </div>
+            <div class="flex gap-3 pt-4">
+              <button type="submit" class="flex-1 px-4 py-3 bg-accent text-dark hover:bg-accent/90 transition-colors">{editItem ? 'Update Item' : 'Add Item'}</button>
+              {editItem && (<a href="/admin/menu" class="px-4 py-3 border border-muted text-muted hover:border-light hover:text-light transition-colors">Cancel</a>)}
+            </div>
+          </form>
+        </section>
+
+        <section class="bg-surface border border-dark p-6 rounded">
+          {menuItems.length === 0 ? (
+            <p class="text-muted">No menu items yet.</p>
           ) : (
             <div class="space-y-4">
-              {categories.map(category => {
-                const items = menuItems.filter(item => item.category === category)
+              {categories.map((cat) => {
+                const items = menuItems.filter((m) => m.category === cat)
                 return (
-                  <div class="bg-surface border border-dark">
-                    <div class="p-4 border-b border-dark">
-                      <h3 class="font-serif text-lg text-accent uppercase tracking-wider">{category}</h3>
-                    </div>
-                    <div class="divide-y divide-dark">
-                      {items.map(item => (
-                        <div class="p-4 flex justify-between items-start gap-4">
-                          <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-1">
-                              <h4 class={`font-medium ${item.sold_out ? 'text-muted line-through' : 'text-light'}`}>
-                                {item.title}
-                              </h4>
-                              {item.sold_out && (
-                                <span class="px-2 py-0.5 bg-red-900/30 text-red-400 text-xs font-sans uppercase tracking-wider">
-                                  Sold Out
-                                </span>
-                              )}
-                            </div>
-                            {item.description && (
-                              <p class="text-muted text-sm mb-2">{item.description}</p>
-                            )}
-                            <p class="text-accent">€{item.price.toFixed(2)}</p>
-                          </div>
-                          
-                          <div class="flex gap-2">
-                            <a 
-                              href={`/admin/menu?edit=${item.id}`}
-                              class="px-3 py-1.5 border border-accent text-accent hover:bg-accent hover:text-dark transition-colors font-sans uppercase tracking-wider text-xs"
-                            >
-                              Edit
-                            </a>
-                            <form method="POST" class="inline">
-                              <input type="hidden" name="action" value="delete" />
-                              <input type="hidden" name="id" value={item.id} />
-                              <button 
-                                type="submit"
-                                onclick="return confirm('Are you sure you want to delete this item?')"
-                                class="px-3 py-1.5 border border-red-500/50 text-red-400 hover:bg-red-900/30 transition-colors font-sans uppercase tracking-wider text-xs"
-                              >
-                                Delete
-                              </button>
-                            </form>
-                          </div>
+                  <div class="border-b border-dark pb-4">
+                    <div class="font-serif text-lg text-accent uppercase tracking-wider mb-2">{cat}</div>
+                    {items.map((it) => (
+                      <div class="flex justify-between items-center py-2">
+                        <div>
+                          <strong>{it.title}</strong>
+                          {it.image && <span class="ml-2 text-muted text-sm">{it.image}</span>}
+                          {it.description && <div class="text-muted text-sm">{it.description}</div>}
+                          <span class="text-accent">€{Number(it.price).toFixed(2)}</span>
                         </div>
-                      ))}
-                    </div>
+                        <div class="flex gap-2">
+                          <a href={`/admin/menu?edit=${it.id}`} class="px-2 py-1 border border-accent text-accent hover:bg-accent hover:text-dark transition-colors text-xs">Edit</a>
+                          <form method="POST" class="inline">
+                            <input type="hidden" name="action" value="delete" />
+                            <input type="hidden" name="id" value={it.id} />
+                            <button type="submit" class="px-2 py-1 border border-red-500 text-red-400 hover:bg-red-900/30 transition-colors text-xs" onclick="return confirm('Delete this item?')">Delete</button>
+                          </form>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )
               })}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   </body>
