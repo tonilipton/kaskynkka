@@ -99,7 +99,7 @@ const { locale = 'fi' } = Astro.props
         titleStr = t[locale as 'fi' | 'en'] ?? t.fi ?? ''
       }
       
-      html += '<div class="flex justify-between items-center py-6 sm:py-8 border-b border-dark/50 px-4" data-item-id="' + (item.menuItem.id ?? '') + '">'
+      html += '<div class="flex justify-between items-center py-6 sm:py-8 border-b border-dark/50 px-6" data-item-id="' + (item.menuItem.id ?? '') + '">'
       html += '<div class="flex-1">'
       html += '<h4 class="font-serif text-light text-lg">' + titleStr + '</h4>'
       html += '<p class="text-muted text-sm">' + formatPrice(item.menuItem.price) + ' ' + perPiece + '</p>'
