@@ -1,7 +1,16 @@
 import type { APIRoute } from "astro";
 import { getSupabaseClient } from "../../lib/supabaseClient";
 
+import { isAdminFromCookie } from "../../lib/admin";
 export const POST: APIRoute = async ({ request }) => {
+  // Simple admin guard using cookie header
+  const cookieHeader = request.headers.get("cookie") || "";
+  if (!isAdminFromCookie(cookieHeader)) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   const supabase = getSupabaseClient();
   const formData = await request.formData();
   const file = formData.get("imageFile");

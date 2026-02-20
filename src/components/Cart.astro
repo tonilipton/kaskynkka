@@ -1,6 +1,7 @@
 ---
 import { cart, getCartTotal, getCartItemCount, removeFromCart, updateQuantity, clearCart, getCartItems } from '../stores/cart'
 import type { Locale } from '../data/menu'
+import { t } from '../lib/i18n'
 
 interface Props {
   locale?: Locale
@@ -12,11 +13,11 @@ const { locale = 'fi' } = Astro.props
 <div id="cart-container" class="bg-surface p-4 sm:p-6 border border-dark">
   <div class="flex justify-between items-center mb-4 sm:mb-6 pb-4 border-b border-dark">
     <h2 class="font-serif text-2xl text-accent">{locale === 'fi' ? 'Tilauksesi' : 'Your Order'}</h2>
-    <span id="cart-count" class="text-muted text-sm uppercase tracking-wider">0 {locale === 'fi' ? 'tuotetta' : 'items'}</span>
+    <span id="cart-count" class="text-muted text-sm uppercase tracking-wider">0</span>
   </div>
   
   <div id="cart-items" class="min-h-[100px] mb-6 sm:mb-8">
-    <p class="text-center text-muted py-8 italic">{locale === 'fi' ? 'Ostoskorisi on tyhjä' : 'Your cart is empty'}</p>
+    <p class="text-center text-muted py-8 italic">{t('cart.empty', locale)}</p>
   </div>
   
   <div class="border-t border-dark pt-6">

@@ -1,9 +1,11 @@
 ---
 import { getSupabaseClient } from '../../lib/supabaseClient'
+import { isAdminFromCookie } from '../../lib/admin'
 
-// Minimal admin gate (should be replaced with real auth in prod)
-const _cookie = (Astro.request?.headers?.get?.('cookie')) ?? ''
-const _isAdmin = /admin_token=s3cr3t/.test(_cookie)
+// Admin gate (replace with real auth in production)
+const cookieHeader = (Astro.request?.headers?.get?.('cookie')) ?? ''
+const headerAuth = (Astro.request?.headers?.get?.('authorization')) ?? ''
+const _isAdmin = isAdminFromCookie(cookieHeader) || (headerAuth.startsWith('Bearer ') && headerAuth.slice(7) === 's3cr3t')
 
 /** Menu item type */
 type MenuItem = {
@@ -106,7 +108,12 @@ if (editId) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-dark text-light font-sans min-h-screen">
+<body class="bg-dark text-light font-sans min-h-screen">
+  { !_isAdmin ? (
+    <div class="p-6 max-w-5xl mx-auto">
+      <div class="bg-red-900/30 border border-red-500/50 text-red-200 p-4 mb-6">Access denied. Admin authentication required.</div>
+    </div>
+  ) : (
     <div class="p-6 max-w-5xl mx-auto">
       <header class="flex justify-between items-center mb-6 border-b border-dark pb-4">
         <h1 class="font-serif text-3xl text-accent uppercase tracking-wider">Menu Management</h1>
