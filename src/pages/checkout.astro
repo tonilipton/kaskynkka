@@ -29,11 +29,11 @@ import Layout from '../layouts/Layout.astro'
         <form id="checkout-form" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-muted text-sm uppercase tracking-wider mb-2">Your Name (Optional)</label>
+              <label class="block text-muted text-sm uppercase tracking-wider mb-2">NIMI (VALINNAINEN)</label>
               <input 
                 type="text" 
                 id="customer-name"
-                placeholder="Enter your name"
+                placeholder="Syötä nimesi"
                 class="w-full bg-dark border border-dark text-light p-4 focus:border-accent focus:outline-none transition-colors"
               />
             </div>
@@ -65,7 +65,7 @@ import Layout from '../layouts/Layout.astro'
         id="proceed-checkout"
         class="w-full py-6 bg-accent text-dark font-sans font-medium uppercase tracking-widest text-lg hover:bg-accent/90 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
       >
-        Proceed to Payment
+        Siirry maksamaan
       </button>
       
       <!-- Back to Menu -->
@@ -78,7 +78,7 @@ import Layout from '../layouts/Layout.astro'
   </div>
 </Layout>
 
-<script>
+  <script>
   // Get cart items from localStorage (persisted cart)
   const CART_STORAGE_KEY = 'kaskynkka-cart-v1'
   const cartStorageJson = localStorage.getItem(CART_STORAGE_KEY)
@@ -192,6 +192,28 @@ import Layout from '../layouts/Layout.astro'
       errorDiv.classList.remove('hidden')
     }
   }
+  // Hook up checkout button to API and validate JSON response
+  document.getElementById('proceed-checkout')?.addEventListener('click', async (e) => {
+    e.preventDefault()
+    try {
+      const resp = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      if (!resp.ok) throw new Error('Checkout request failed')
+      const contentType = resp.headers.get('content-type') || ''
+      if (!contentType.includes('application/json')) throw new Error('Invalid checkout response')
+      const data = await resp.json()
+      if (data?.url) window.location.href = data.url
+      else throw new Error('Checkout URL not provided')
+    } catch (err) {
+      const errMsg = err?.message || 'Checkout error'
+      const el = document.getElementById('checkout-error')
+      if (el) {
+        el.textContent = errMsg
+        el.classList.remove('hidden')
+      }
+    }
+  })
 </script>
-
-

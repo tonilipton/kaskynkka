@@ -90,14 +90,18 @@ const { locale = 'fi' } = Astro.props
     
     let html = ''
     for (const item of items) {
-      // Handle both old format (title as string) and new format (title as object with fi/en)
-      const title = typeof item.menuItem.title === 'object' 
-        ? (item.menuItem.title[locale as 'fi' | 'en'] || item.menuItem.titleFi || '')
-        : item.menuItem.title
+      // Normalize title for both string and object-with-locales formats
+      let titleStr = ''
+      const t = item.menuItem.title
+      if (typeof t === 'string') {
+        titleStr = t
+      } else if (t && typeof t === 'object') {
+        titleStr = t[locale as 'fi' | 'en'] ?? t.fi ?? ''
+      }
       
-      html += '<div class="flex justify-between items-center py-6 sm:py-8 border-b border-dark/50 px-4" data-item-id="' + item.menuItem.id + '">'
+      html += '<div class="flex justify-between items-center py-6 sm:py-8 border-b border-dark/50 px-4" data-item-id="' + (item.menuItem.id ?? '') + '">'
       html += '<div class="flex-1">'
-      html += '<h4 class="font-serif text-light text-lg">' + title + '</h4>'
+      html += '<h4 class="font-serif text-light text-lg">' + titleStr + '</h4>'
       html += '<p class="text-muted text-sm">' + formatPrice(item.menuItem.price) + ' ' + perPiece + '</p>'
       html += '</div>'
       html += '<div class="flex items-center gap-3">'
