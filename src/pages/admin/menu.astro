@@ -13,52 +13,90 @@ const editId = Astro.url.searchParams.get('edit')
 // Handle form submissions
 if (Astro.request.method === 'POST') {
   try {
-    const formData = await Astro.request.formData()
-    const supabase = getSupabaseClient()
-    
-    const formAction = formData.get('action') as string
-    
+    const formData = await Astro.request.formData();
+    const supabase = getSupabaseClient();
+
+    const formAction = formData.get('action');
+
     if (formAction === 'create' || formAction === 'update') {
       const itemData = {
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        price: parseFloat(formData.get('price') as string),
-        category: formData.get('category') as string,
-        image: formData.get('image') as string,
+        title: formData.get('title'),
+        description: formData.get('description'),
+        price: parseFloat(formData.get('price')),
+        category: formData.get('category'),
         sold_out: formData.get('sold_out') === 'on'
+      };
+
+      const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://kaskynkka.net';
+      const imageFile = formData.get('imageFile');
+      if (imageFile && imageFile instanceof File) {
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('menu-images')
+          .upload(`menu/${imageFile.name}`, imageFile, { upsert: true });
+        if (uploadError) throw uploadError;
+        itemData.image = `${siteUrl}${uploadData.path}`;
+      } else if (formData.get('image')) {
+        itemData.image = formData.get('image');
       }
-      
+
       if (formAction === 'create') {
         const { error: insertError } = await supabase
           .from('menu_items')
-          .insert([itemData])
-        
-        if (insertError) throw insertError
-        successMessage = 'Menu item created successfully!'
+          .insert([itemData]);
+        if (insertError) throw insertError;
+        successMessage = 'Menu item created successfully!';
       } else {
-        const id = formData.get('id') as string
+        const id = formData.get('id');
         const { error: updateError } = await supabase
           .from('menu_items')
           .update(itemData)
-          .eq('id', id)
-        
-        if (updateError) throw updateError
-        successMessage = 'Menu item updated successfully!'
+          .eq('id', id);
+        if (updateError) throw updateError;
+        successMessage = 'Menu item updated successfully!';
       }
     } else if (formAction === 'delete') {
-      const id = formData.get('id') as string
+      const id = formData.get('id');
       const { error: deleteError } = await supabase
         .from('menu_items')
         .delete()
-        .eq('id', id)
-      
-      if (deleteError) throw deleteError
-      successMessage = 'Menu item deleted successfully!'
+        .eq('id', id);
+      if (deleteError) throw deleteError;
+      successMessage = 'Menu item deleted successfully!';
     }
-  } catch (e: any) {
-    error = e.message || 'Failed to process request'
+  } catch (e) {
+    error = e.message || 'Failed to process request';
   }
 }
+
+      if (formAction === 'create') {
+        const { error: insertError } = await supabase
+          .from('menu_items')
+          .insert([itemData]);
+        if (insertError) throw insertError;
+        successMessage = 'Menu item created successfully!';
+      } else {
+        const id = formData.get('id') as string;
+        const { error: updateError } = await supabase
+          .from('menu_items')
+          .update(itemData)
+          .eq('id', id);
+        if (updateError) throw updateError;
+        successMessage = 'Menu item updated successfully!';
+      }
+    } else if (formAction === 'delete') {
+      const id = formData.get('id') as string;
+      const { error: deleteError } = await supabase
+        .from('menu_items')
+        .delete()
+        .eq('id', id);
+      if (deleteError) throw deleteError;
+      successMessage = 'Menu item deleted successfully!';
+    }
+  } catch (e: any) {
+    error = e.message || 'Failed to process request';
+  }
+}
+
 
 // Fetch menu items and categories
 try {
@@ -219,15 +257,14 @@ if (editId) {
               </div>
               
               <div>
-                <label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Image URL</label>
-                <input 
-                  type="url" 
-                  name="image" 
-                  value={editItem?.image || ''}
-                  placeholder="/images/dish-name.jpg"
-                  class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
-                />
-                <p class="text-muted/60 text-xs mt-1">Path to image in /public/images/</p>
+<label class="block text-muted text-sm mb-2 font-sans uppercase tracking-wider text-xs">Image file</label>
+<input 
+  type="file" 
+  name="imageFile" 
+  accept="image/*"
+  class="w-full bg-dark border border-dark text-light px-4 py-2 focus:border-accent outline-none transition-colors"
+/>
+<p class="text-muted/60 text-xs mt-1">Image will be uploaded to Supabase Storage.</p>
               </div>
               
               <div class="flex items-center gap-3 pt-2">

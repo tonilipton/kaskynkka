@@ -79,14 +79,35 @@ import Layout from '../layouts/Layout.astro'
 </Layout>
 
 <script>
-  // Get cart items from sessionStorage
-  const cartItemsJson = sessionStorage.getItem('cartItems')
+  // Get cart items from localStorage (persisted cart)
+  const CART_STORAGE_KEY = 'kaskynkka-cart-v1'
+  const cartStorageJson = localStorage.getItem(CART_STORAGE_KEY)
+  let cartItems: any[] = []
   
-  if (!cartItemsJson) {
-    window.location.href = '/'
+  if (cartStorageJson) {
+    try {
+      const parsed = JSON.parse(cartStorageJson)
+      cartItems = Object.values(parsed.items || {})
+    } catch (e) {
+      console.error('Failed to parse cart:', e)
+    }
   }
   
-  const cartItems = JSON.parse(cartItemsJson || '[]')
+  // Fallback to sessionStorage for backward compatibility
+  if (cartItems.length === 0) {
+    const sessionCartJson = sessionStorage.getItem('cartItems')
+    if (sessionCartJson) {
+      try {
+        cartItems = JSON.parse(sessionCartJson)
+      } catch (e) {
+        console.error('Failed to parse session cart:', e)
+      }
+    }
+  }
+  
+  if (cartItems.length === 0) {
+    window.location.href = '/'
+  }
   
   // Render order summary
   function renderSummary() {
